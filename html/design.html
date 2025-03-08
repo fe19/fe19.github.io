@@ -38,29 +38,36 @@
 
 <div class="container">
     <div class="row justify-content-center py-3">
-        <div class="col-auto">
+        <div class="col-auto input-width">
             <div class="input-group input-group-lg">
                 <span class="input-group-text input-width" id="input-number-of-rooms">Number of Rooms</span>
-                <input type="number" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="input-number-of-rooms" step="0.5" value="4">
+                <input type="number" id="input-design-rooms" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="input-number-of-rooms" step="0.5" min="1" max="8" value="4">
             </div>
             <div class="input-group input-group-lg">
                 <span class="input-group-text input-width" id="input-area">Area</span>
-                <input type="number" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="input-area" value="100">
+                <input type="number" id="input-design-area" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="input-area" min="10" max="200" value="100">
                 <span class="input-group-text">m2</span>
             </div>
             <div class="input-group input-group-lg">
                 <span class="input-group-text input-width" id="input-floor">Floor</span>
-                <input type="number" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="input-floor" value="1">
+                <input type="number" id="input-design-floor" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="input-floor" min="-5" max="20" value="1">
             </div>
         </div>
     </div>
+
     <div class="row justify-content-center py-3">
         <div class="col-auto">
             <button type="button" id="button-2d" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">2D</button>
             <button type="button" id="button-generate" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Generate</button>
+        </div>
+    </div>
+
+    <div class="row justify-content-center py-3">
+        <div class="col-auto">
+            <h5 id="text-field-generation-description"></h5>
         </div>
     </div>
 </div>

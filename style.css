@@ -2,6 +2,10 @@ h1 {
     color: #0dcaf0;
 }
 
+h5 {
+    color: #0dcaf0;
+}
+
 .nav-pills .nav-link.active {
     background-color: #0dcaf0;
 }
