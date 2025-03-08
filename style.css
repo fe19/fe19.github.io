@@ -5,3 +5,7 @@ h1 {
 .nav-pills .nav-link.active {
     background-color: #0dcaf0;
 }
+
+.input-width {
+    width: 50%;
+}
