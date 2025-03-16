@@ -8,7 +8,7 @@ function drawDesign(canvas) {
     ctx.fillRect(50, 50, 300, 300);
 }
 
-function toggleDivVisibility(divId) {
+function toggleVisibility(divId) {
     const div = document.getElementById(divId);
     if(div.style.display === "none" || div.style.display === "") {
         div.style.display = "block"; // show the div
@@ -31,7 +31,8 @@ button.addEventListener('click', function () {
         canvasContainer.style.display = 'none';
     }
     drawDesign(canvasDesign);
-    toggleDivVisibility("text-field-generation-description");
+    toggleVisibility("text-field-generation-description");
+    toggleVisibility("image3D");
 })
 
 // Experimental
