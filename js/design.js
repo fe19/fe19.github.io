@@ -8,6 +8,15 @@ function drawDesign(canvas) {
     ctx.fillRect(50, 50, 300, 300);
 }
 
+function toggleDivVisibility(divId) {
+    const div = document.getElementById(divId);
+    if(div.style.display === "none" || div.style.display === "") {
+        div.style.display = "block"; // show the div
+    } else {
+        div.style.display = "none"; // hide the div
+    }
+}
+
 button.addEventListener('click', function () {
     const canvasContainer = document.getElementById('canvasContainer');
     const canvasDesign = document.getElementById('canvasDesign');
@@ -22,6 +31,7 @@ button.addEventListener('click', function () {
         canvasContainer.style.display = 'none';
     }
     drawDesign(canvasDesign);
+    toggleDivVisibility("text-field-generation-description");
 })
 
 // Experimental
