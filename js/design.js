@@ -25,12 +25,13 @@ button.addEventListener('click', function () {
     const area = document.getElementById('input-design-area').value;
     const floor = document.getElementById('input-design-floor').value;
     textFieldGeneration.textContent = `Generated a design with ${nbrRooms} rooms on ${area} m2 on the ${floor} floor`;
+
     if (canvasContainer.style.display === 'none') {
         canvasContainer.style.display = 'flex';
     } else {
         canvasContainer.style.display = 'none';
     }
-    drawDesign(canvasDesign);
+    // drawDesign(canvasDesign);
     toggleVisibility("text-field-generation-description");
     toggleVisibility("image3D");
 })
