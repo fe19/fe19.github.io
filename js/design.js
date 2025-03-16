@@ -11,14 +11,13 @@ function drawDesign(canvas) {
 function toggleVisibility(divId) {
     const div = document.getElementById(divId);
     if(div.style.display === "none" || div.style.display === "") {
-        div.style.display = "block"; // show the div
+        div.style.display = "flex"; // show the div
     } else {
         div.style.display = "none"; // hide the div
     }
 }
 
 button.addEventListener('click', function () {
-    const canvasContainer = document.getElementById('canvasContainer');
     const canvasDesign = document.getElementById('canvasDesign');
 
     const nbrRooms = document.getElementById('input-design-rooms').value;
@@ -26,12 +25,8 @@ button.addEventListener('click', function () {
     const floor = document.getElementById('input-design-floor').value;
     textFieldGeneration.textContent = `Generated a design with ${nbrRooms} rooms on ${area} m2 on the ${floor} floor`;
 
-    if (canvasContainer.style.display === 'none') {
-        canvasContainer.style.display = 'flex';
-    } else {
-        canvasContainer.style.display = 'none';
-    }
     // drawDesign(canvasDesign);
+    //toggleVisibility("canvasContainer");
     toggleVisibility("text-field-generation-description");
     toggleVisibility("image3D");
 })
