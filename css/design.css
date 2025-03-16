@@ -6,7 +6,7 @@ body {
 .box {
   --size: 100px;
   --strip-size: 20px;
-  --strip-color: #FF8087;
+  --strip-color: #0dcaf0;
   
   width: var(--size);
   aspect-ratio: 1;

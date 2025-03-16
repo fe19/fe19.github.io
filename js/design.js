@@ -20,10 +20,11 @@ function toggleVisibility(divId) {
 button.addEventListener('click', function () {
     const canvasDesign = document.getElementById('canvasDesign');
 
-    const nbrRooms = document.getElementById('input-design-rooms').value;
-    const area = document.getElementById('input-design-area').value;
-    const floor = document.getElementById('input-design-floor').value;
-    textFieldGeneration.textContent = `Generated a design with ${nbrRooms} rooms on ${area} m2 on the ${floor} floor`;
+    const length = document.getElementById('input-design-length').value;
+    const width = document.getElementById('input-design-width').value;
+    const height = document.getElementById('input-design-height').value;
+    const floors = document.getElementById('input-design-floors').value;
+    textFieldGeneration.textContent = `Generated a design with ground area ${length} x ${width} and ${floors} floors.`;
 
     // drawDesign(canvasDesign);
     //toggleVisibility("canvasContainer");
