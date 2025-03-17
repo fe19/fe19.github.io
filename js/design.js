@@ -1,4 +1,6 @@
-const buttonGenerate = document.getElementById('button-generate');   // TODO rename id to buttonGenerate
+const buttonGenerate = document.getElementById('button-generate');
+const buttonMode = document.getElementById('button-mode');
+const button3d = document.getElementById('button-3d');
 const textFieldGeneration = document.getElementById('text-field-generation-description');
 
 
@@ -29,6 +31,7 @@ buttonGenerate.addEventListener('click', function () {
     // drawCanvasDesign(canvasDesign);
     //toggleVisibility("canvasContainer");
     toggleVisibility("text-field-generation-description");
+    if()
     toggleVisibility("image3D");
 })
 
