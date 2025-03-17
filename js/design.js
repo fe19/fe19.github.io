@@ -3,7 +3,6 @@ const buttonMode = document.getElementById('button-mode');
 const button3d = document.getElementById('button-3d');
 const textFieldGeneration = document.getElementById('text-field-generation-description');
 
-
 function drawCanvasDesign(canvas) {
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = '#0dcaf0';
@@ -31,8 +30,12 @@ buttonGenerate.addEventListener('click', function () {
     // drawCanvasDesign(canvasDesign);
     //toggleVisibility("canvasContainer");
     toggleVisibility("text-field-generation-description");
-    if()
-    toggleVisibility("image3D");
+    if (buttonMode.checked) {
+        // TODO
+    } else {
+        toggleVisibility("image3D");
+    }
+
 })
 
 // Experimental
