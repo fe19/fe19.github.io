@@ -1,4 +1,4 @@
-const button = document.getElementById('button-generate');   // TODO rename id to buttonGenerate
+const buttonGenerate = document.getElementById('button-generate');   // TODO rename id to buttonGenerate
 const textFieldGeneration = document.getElementById('text-field-generation-description');
 
 
@@ -17,7 +17,7 @@ function toggleVisibility(divId) {
     }
 }
 
-button.addEventListener('click', function () {
+buttonGenerate.addEventListener('click', function () {
     const canvasDesign = document.getElementById('canvasDesign');
 
     const length = document.getElementById('input-design-length').value;
