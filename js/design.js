@@ -2,7 +2,7 @@ const buttonGenerate = document.getElementById('button-generate');   // TODO ren
 const textFieldGeneration = document.getElementById('text-field-generation-description');
 
 
-function drawDesign(canvas) {
+function drawCanvasDesign(canvas) {
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = '#0dcaf0';
     ctx.fillRect(50, 50, 300, 300);
@@ -26,7 +26,7 @@ buttonGenerate.addEventListener('click', function () {
     const floors = document.getElementById('input-design-floors').value;
     textFieldGeneration.textContent = `Volume = ${length}m x ${width}m x ${floors * heightFloor}m on ${floors} floors.`;
 
-    // drawDesign(canvasDesign);
+    // drawCanvasDesign(canvasDesign);
     //toggleVisibility("canvasContainer");
     toggleVisibility("text-field-generation-description");
     toggleVisibility("image3D");
