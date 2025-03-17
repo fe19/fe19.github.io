@@ -22,9 +22,9 @@ button.addEventListener('click', function () {
 
     const length = document.getElementById('input-design-length').value;
     const width = document.getElementById('input-design-width').value;
-    const height = document.getElementById('input-design-height').value;
+    const heightFloor = document.getElementById('input-design-height-floor').value;
     const floors = document.getElementById('input-design-floors').value;
-    textFieldGeneration.textContent = `Generated a design with ground area ${length} x ${width} and ${floors} floors.`;
+    textFieldGeneration.textContent = `Volume = ${length}m x ${width}m x ${floors * heightFloor}m on ${floors} floors.`;
 
     // drawDesign(canvasDesign);
     //toggleVisibility("canvasContainer");
