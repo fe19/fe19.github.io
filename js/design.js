@@ -31,7 +31,7 @@ buttonGenerate.addEventListener('click', function () {
     //toggleVisibility("canvasContainer");
     toggleVisibility("text-field-generation-description");
     if (buttonMode.checked) {
-        // TODO
+        // TODO create design with Three.js
     } else {
         toggleVisibility("image3D");
     }
