@@ -1,14 +1,14 @@
-const inputPerson1Name = document.getElementById('input-person1-name');
-const inputPerson2Name = document.getElementById('input-person2-name');
-const outputPerson1Name = document.getElementById('output-person1-name');
-const outputPerson2Name = document.getElementById('output-person2-name');
+const inputPersonName1 = document.getElementById('input-person1-name');
+const inputPersonName2 = document.getElementById('input-person2-name');
+const outputPersonName1 = document.getElementById('output-person1-name');
+const outputPersonName2 = document.getElementById('output-person2-name');
 
-inputPerson1Name.addEventListener('input', (event) => {
-    const name = inputPerson1Name.value;
-    outputPerson1Name.textContent = `${name} spent`;
-});
+function addListenerPerson(inputPerson, outputPerson) {
+    inputPerson.addEventListener('input', () => {
+        const name = inputPerson.value;
+        outputPerson.textContent = `${name} spent`;
+    });
+}
 
-inputPerson2Name.addEventListener('input', (event) => {
-    const name = inputPerson2Name.value;
-    outputPerson2Name.textContent = `${name} spent`;
-});
+addListenerPerson(inputPersonName1, outputPersonName1);
+addListenerPerson(inputPersonName2, outputPersonName2);
