@@ -12,3 +12,4 @@ function addListenerPerson(inputPerson, outputPerson) {
 
 addListenerPerson(inputPersonName1, outputPersonName1);
 addListenerPerson(inputPersonName2, outputPersonName2);
+
