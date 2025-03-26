@@ -14,5 +14,10 @@ function addListenerPerson(inputPerson, outputPerson) {
     });
 }
 
+function computeTotal(outputTotal) {
+    let total = 0;
+    outputTotal.textContent = total;
+}
+
 addListenerPerson(inputPersonName1, outputPersonName1);
 addListenerPerson(inputPersonName2, outputPersonName2);
