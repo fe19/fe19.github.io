@@ -14,10 +14,18 @@ function addListenerPerson(inputPerson, outputPerson) {
     });
 }
 
-function computeTotal(outputTotal) {
-    let total = 0;
-    outputTotal.textContent = total;
+function computeTotal(outputTotal, inputClass) {
+    const inputExpenses = document.querySelectorAll('input.' + inputClass);
+    console.log('inputExpenses: ', inputExpenses);
+    let total = 0.0;
+    inputExpenses.forEach(expense => {
+        total += parseInt(expense.placeholder);
+    });
+    outputTotal.textContent = `$${total}`;
+    console.log('Computed total = ', total);
 }
 
 addListenerPerson(inputPersonName1, outputPersonName1);
 addListenerPerson(inputPersonName2, outputPersonName2);
+
+computeTotal(outputTotal, 'expense-input');
