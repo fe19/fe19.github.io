@@ -4,6 +4,7 @@ const outputPersonName1 = document.getElementById('output-person1-name');
 const outputPersonName2 = document.getElementById('output-person2-name');
 
 const outputTotal = document.getElementById('output-total');
+const outputPerson1 = document.getElementById('output-person1');
 
 function addListenerPerson(inputPerson, outputPerson) {
     inputPerson.addEventListener('input', () => {
