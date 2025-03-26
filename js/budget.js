@@ -21,7 +21,7 @@ function computeTotal(outputTotal, inputClass) {
     inputExpenses.forEach(expense => {
         total += parseInt(expense.placeholder);
     });
-    outputTotal.textContent = `$${total}`;
+    outputTotal.textContent = `$${total.toFixed(2)}`;
     console.log('Computed total = ', total);
 }
 
