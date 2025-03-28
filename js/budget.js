@@ -11,6 +11,8 @@ function addListenerPerson(inputPerson, outputPerson) {
     inputPerson.addEventListener('input', () => {
         const name = inputPerson.value;
         outputPerson.textContent = `${name} spent`;
+        console.log('Registered input listener for', inputPerson);
+        console.log('Registered output listener for', outputPerson);
     });
 }
 
