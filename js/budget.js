@@ -64,8 +64,8 @@ function activateNightMode() {
     var now = new Date();
     var hours = now.getHours();
     const inputElements = document.querySelectorAll('.input-group, .input-group-text, .form-control, .table, td');
-    if(hours >= 21 || hours <= 5) {
-        for(inputElement of inputElements) {
+    if (hours >= 21 || hours <= 5) {
+        for (inputElement of inputElements) {
             inputElement.classList.add('color-night');
         }
         document.body.style.background = "#355C7D";
@@ -86,7 +86,7 @@ loadInitial();
 
 activateNightMode();
 
-for(const inputElement of inputElements) {
+for (const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
 
