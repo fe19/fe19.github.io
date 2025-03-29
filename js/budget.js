@@ -21,7 +21,6 @@ function listenerInputPerson(inputPerson) {
 
 function updateField(idSuffix, value) {
     const id = 'output-' + idSuffix;
-    console.log(id);
     const field = document.getElementById(id);
     field.textContent = `${value} spent`;
     console.log(`Update ${field.id} = ${value}`);
@@ -59,13 +58,13 @@ function computeTotal(outputTotal, inputClass) {
 }
 
 function activateNightMode() {
-    console.log('Activated night mode');
+    console.log('Register night mode');
     var now = new Date();
     var hours = now.getHours();
     if(hours >= 20 || hours <= 5) {
         document.body.style.background = "#355C7D";
         document.body.style.color = "white";
-        console.log('Switched to night mode');
+        console.log('Switch to night mode');
     }
 }
 
@@ -79,10 +78,10 @@ function getOutputSuffix(id) {
 
 loadInitial();
 
+activateNightMode();
+
 for(const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
 
 computeTotal(outputTotal, 'expense-input');
-
-activateNightMode();
