@@ -17,3 +17,8 @@ h5 {
 .bg-color-turquoise {
     background-color: #0dcaf0;
 }
+
+.color-night {
+    background-color: #355C7D;
+    color: white;
+}

@@ -5,6 +5,8 @@ const outputTotal = document.getElementById('output-total');
 const outputPerson1 = document.getElementById('output-person1');
 const outputPerson2 = document.getElementById('output-person2');
 
+const currency = '€';
+
 function listenerInputPerson(inputPerson) {
     inputPerson.addEventListener('input', () => {
         const id = inputPerson.id;
@@ -53,7 +55,7 @@ function computeTotal(outputTotal, inputClass) {
     inputExpenses.forEach(expense => {
         total += parseInt(expense.placeholder);
     });
-    outputTotal.textContent = `$${total.toFixed(2)}`;
+    outputTotal.textContent = `${currency}${total.toFixed(2)}`;
     console.log('Compute total = ', total);
 }
 
@@ -61,7 +63,11 @@ function activateNightMode() {
     console.log('Register night mode');
     var now = new Date();
     var hours = now.getHours();
-    if(hours >= 20 || hours <= 5) {
+    const inputElements = document.querySelectorAll('.input-group, .input-group-text, .form-control, .table, td');
+    if(hours >= 21 || hours <= 5) {
+        for(inputElement of inputElements) {
+            inputElement.classList.add('color-night');
+        }
         document.body.style.background = "#355C7D";
         document.body.style.color = "white";
         console.log('Switch to night mode');
