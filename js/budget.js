@@ -27,7 +27,18 @@ function computeTotal(outputTotal, inputClass) {
     console.log('Computed total = ', total);
 }
 
+function nightMode() {
+    var now = new Date();
+    var hours = now.getHours();§§
+    if(hours > 20 && hours < 5) {
+        document.body.style.background = "#355C7D";
+        document.body.style.color = "white";
+    }
+}
+
 addListenerPerson(inputPersonName1, outputPersonName1);
 addListenerPerson(inputPersonName2, outputPersonName2);
 
 computeTotal(outputTotal, 'expense-input');
+
+nightMode();
