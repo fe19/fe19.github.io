@@ -3,6 +3,8 @@ const inputPersonName2 = document.getElementById('input-person2-name');
 const outputPersonName1 = document.getElementById('output-person1-name');
 const outputPersonName2 = document.getElementById('output-person2-name');
 
+const inputElements = document.getElementsByClassName("input-configuration");
+
 const outputTotal = document.getElementById('output-total');
 const outputPerson1 = document.getElementById('output-person1');
 const outputPerson2 = document.getElementById('output-person2');
