@@ -91,3 +91,5 @@ for (const inputElement of inputElements) {
 }
 
 computeTotal(outputTotal, 'expense-input');
+
+console.log('Successful');
