@@ -29,8 +29,9 @@ function computeTotal(outputTotal, inputClass) {
 
 function nightMode() {
     var now = new Date();
-    var hours = now.getHours();§§
-    if(hours > 20 && hours < 5) {
+    var hours = now.getHours();
+    if(hours >= 20 || hours <= 5) {
+        console.log('Switched to night mode');
         document.body.style.background = "#355C7D";
         document.body.style.color = "white";
     }
