@@ -1,10 +1,5 @@
 const inputElements = document.getElementsByClassName('input-configuration'); // [input-person1-name, input-person2-name]
-const inputPersonName1 = document.getElementById('input-person1-name');
-const inputPersonName2 = document.getElementById('input-person2-name');
-
-const outputElementsModifiable = document.getElementsByClassName('');
-const outputPersonName1 = document.getElementById('output-person1-name');
-const outputPersonName2 = document.getElementById('output-person2-name');
+const outputElementsModifiable = document.getElementsByClassName('output-name-modifiable'); // [output-person1-name, output-person2-name]
 
 const outputTotal = document.getElementById('output-total');
 const outputPerson1 = document.getElementById('output-person1');
@@ -13,20 +8,23 @@ const outputPerson2 = document.getElementById('output-person2');
 function listenerInputPerson(inputPerson) {
     inputPerson.addEventListener('input', () => {
         const id = inputPerson.id;
+        const idSuffix = getInputSuffix(id);
         const value = inputPerson.value;
-        store(id, value);
-        updateField(getInputSuffix(id), value);
+        store(idSuffix, value);
+        updateField(idSuffix, value);
     });
 }
 
 function updateField(idSuffix, value) {
     const id = 'output-' + idSuffix;
+    console.log('Debug: ', id);
     const field = document.getElementById(id);
     field.textContent = `${value} spent`;
     console.log(`Update ${field.id} = ${value}`);
 }
 
-function updateInput(id, value) {
+function updateInput(idSuffix, value) {
+    const id = 'input-' + idSuffix;
     const element = document.getElementById(id);
     element.value = value;
     console.log(`Update element ${id} = ${value}`);
@@ -38,12 +36,14 @@ function store(key, value) {
 }
 
 function loadInitial() {
-    const key = inputPersonName1.id;
-    const value = localStorage.getItem(key);
-    console.log(`Load from storage (${key}, ${value})`);
-    updateInput(key, value);
-    const id = outputPersonName1.id;
-    updateField(getOutputSuffix(id), value);
+    console.log('Load initial values');
+    for (const inputElement of inputElements) {
+        const key = getInputSuffix(inputElement.id);
+        const value = localStorage.getItem(key);
+        console.log(`   Load from storage (${key}, ${value})`);
+        updateInput(key, value);
+        updateField(key, value);
+    }
 }
 
 function computeTotal(outputTotal, inputClass) {
