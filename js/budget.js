@@ -37,6 +37,12 @@ function nightMode() {
     }
 }
 
+function saveToFile(key, value) {
+    localStorage.setItem(key, value);
+}
+
+saveToFile('person1', 'Fabian')
+
 addListenerPerson(inputPersonName1, outputPersonName1);
 addListenerPerson(inputPersonName2, outputPersonName2);
 
