@@ -7,13 +7,22 @@ const outputTotal = document.getElementById('output-total');
 const outputPerson1 = document.getElementById('output-person1');
 const outputPerson2 = document.getElementById('output-person2');
 
-function addListenerPerson(inputPerson, outputPerson) {
+function listenerPerson(inputPerson, outputPerson) {
     inputPerson.addEventListener('input', () => {
-        const name = inputPerson.value;
-        outputPerson.textContent = `${name} spent`;
-        console.log('Registered input listener for', inputPerson);
-        console.log('Registered output listener for', outputPerson);
+        const value = inputPerson.value;
+        updateOutput(outputPerson, value);
+        store(inputPerson.id, value);
     });
+}
+
+function updateOutput(outputPerson, value) {
+    outputPerson.textContent = `${value} spent`;
+    console.log(`Update ${outputPerson.id} = ${value}`);
+}
+
+function store(key, value) {
+    localStorage.setItem(key, value);
+    console.log(`Store (${key}, ${value})`);
 }
 
 function computeTotal(outputTotal, inputClass) {
@@ -24,7 +33,7 @@ function computeTotal(outputTotal, inputClass) {
         total += parseInt(expense.placeholder);
     });
     outputTotal.textContent = `$${total.toFixed(2)}`;
-    console.log('Computed total = ', total);
+    console.log('Compute total = ', total);
 }
 
 function nightMode() {
@@ -37,14 +46,8 @@ function nightMode() {
     }
 }
 
-function saveToFile(key, value) {
-    localStorage.setItem(key, value);
-}
-
-saveToFile('person1', 'Fabian')
-
-addListenerPerson(inputPersonName1, outputPersonName1);
-addListenerPerson(inputPersonName2, outputPersonName2);
+listenerPerson(inputPersonName1, outputPersonName1);
+listenerPerson(inputPersonName2, outputPersonName2);
 
 computeTotal(outputTotal, 'expense-input');
 
