@@ -10,19 +10,35 @@ const outputPerson2 = document.getElementById('output-person2');
 function listenerPerson(inputPerson, outputPerson) {
     inputPerson.addEventListener('input', () => {
         const value = inputPerson.value;
-        updateOutput(outputPerson, value);
+        updateField(outputPerson.id, value);
         store(inputPerson.id, value);
     });
 }
 
-function updateOutput(outputPerson, value) {
-    outputPerson.textContent = `${value} spent`;
-    console.log(`Update ${outputPerson.id} = ${value}`);
+function updateField(id, value) {
+    const field = document.getElementById(id);
+    field.textContent = `${value} spent`;
+    console.log(`Update ${field.id} = ${value}`);
+}
+
+function updateInput(id, value) {
+    const element = document.getElementById(id);
+    element.value = value;
+    console.log(`Update element ${id} = ${value}`);
 }
 
 function store(key, value) {
     localStorage.setItem(key, value);
-    console.log(`Store (${key}, ${value})`);
+    console.log(`Save to storage (${key}, ${value})`);
+}
+
+function loadInitial() {
+    const key = inputPersonName1.id;
+    const value = localStorage.getItem(key);
+    console.log(`Load from storage (${key}, ${value})`);
+    updateInput(key, value);
+    const outputField = outputPersonName1.id;
+    updateField(outputField, value);
 }
 
 function computeTotal(outputTotal, inputClass) {
@@ -45,6 +61,8 @@ function nightMode() {
         document.body.style.color = "white";
     }
 }
+
+loadInitial();
 
 listenerPerson(inputPersonName1, outputPersonName1);
 listenerPerson(inputPersonName2, outputPersonName2);
