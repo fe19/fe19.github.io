@@ -59,10 +59,11 @@ function loadInitial() {
 
 function computeTotal(outputTotal, inputClass) {
     const inputExpenses = document.querySelectorAll('input.' + inputClass);
-    console.log('inputExpenses: ', inputExpenses);
     let total = 0.0;
     inputExpenses.forEach(expense => {
-        total += parseInt(expense.placeholder);
+        const amount = expense.placeholder === '' ? 0 : parseInt(expense.placeholder);
+        console.log('Amount =', amount);
+        total += parseInt(amount);
     });
     outputTotal.textContent = `${currency}${total.toFixed(2)}`;
     console.log('Compute total = ', total);
