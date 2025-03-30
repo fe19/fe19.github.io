@@ -10,6 +10,7 @@ function listenerInputPerson(inputPerson) {
         const value = inputPerson.value;
         store(idSuffix, value);
         updateField(idSuffix, value);
+        updateTableNames(idSuffix, value);
     });
 }
 
@@ -49,6 +50,14 @@ function updateInput(idSuffix, value) {
     console.log(`Update element ${id} = ${value}`);
 }
 
+function updateTableNames(idSuffix, name) {
+    const split = idSuffix.split('-');
+    const index =  split[0].substring(6);
+    const index1 = 1;
+    const person = document.getElementById('table-header-person' + index);
+    person.textContent = name;
+}
+
 function store(key, value) {
     localStorage.setItem(key, value);
     console.log(`Save to storage (${key}, ${value})`);
@@ -73,6 +82,7 @@ function loadInitial() {
         console.log(`   Load from storage (${key}, ${value})`);
         updateInput(key, value);
         updateField(key, value);
+        updateTableNames(key, value);
     }
 }
 
