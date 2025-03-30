@@ -2,8 +2,6 @@ const inputElements = document.getElementsByClassName('input-configuration'); //
 const outputElementsModifiable = document.getElementsByClassName('output-name-modifiable'); // [output-person1-name, output-person2-name]
 
 const outputTotal = document.getElementById('output-total');
-const outputPerson1 = document.getElementById('output-person1');
-const outputPerson2 = document.getElementById('output-person2');
 
 const currency = '€';
 
