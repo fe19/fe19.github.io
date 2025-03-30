@@ -1,8 +1,6 @@
 const inputElements = document.getElementsByClassName('input-configuration'); // [input-person1-name, input-person2-name]
 const outputElementsModifiable = document.getElementsByClassName('output-name-modifiable'); // [output-person1-name, output-person2-name]
 
-const outputTotal = document.getElementById('output-total');
-
 const currency = '€';
 
 function listenerInputPerson(inputPerson) {
@@ -13,6 +11,19 @@ function listenerInputPerson(inputPerson) {
         store(idSuffix, value);
         updateField(idSuffix, value);
     });
+}
+
+function listenerTable() {
+    const inputElements = document.querySelectorAll('input.expense-input');
+    for(const inputElement of inputElements) {
+        const id = inputElement.id;
+        const amount = inputElement.placeholder;
+        inputElement.addEventListener('input', () => {
+            store(id, amount);
+            console.log('compute total');
+            computeTotal();
+        });
+    }
 }
 
 function updateField(idSuffix, value) {
@@ -57,11 +68,12 @@ function loadInitial() {
     }
 }
 
-function computeTotal(outputTotal, inputClass) {
-    const inputExpenses = document.querySelectorAll('input.' + inputClass);
+function computeTotal() {
+    const outputTotal = document.getElementById('output-total');
+    const inputExpenses = document.querySelectorAll('input.expense-input');
     let total = 0.0;
     inputExpenses.forEach(expense => {
-        const amount = expense.placeholder === '' ? 0 : parseInt(expense.placeholder);
+        const amount = expense.value === '' ? 0 : parseInt(expense.value);
         console.log('Amount =', amount);
         total += parseInt(amount);
     });
@@ -100,6 +112,8 @@ for (const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
 
-computeTotal(outputTotal, 'expense-input');
+listenerTable();
+
+computeTotal();
 
 console.log('Successful');
