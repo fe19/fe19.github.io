@@ -111,12 +111,14 @@ function computePersons() {
     const inputExpenses = document.querySelectorAll('input.input-expense');
     let total1 = 0.0;
     let total2 = 0.0;
+    let i = 1;
     inputExpenses.forEach(expense => {
         const amount = expense.value === '' ? 0 : parseInt(expense.value);
-        const percentage1 = 0.7;
-        const percentage2 = 0.3;
-        total1 += parseInt(amount) * percentage1;
-        total2 += parseInt(amount) * percentage2;
+        const percentage1 = document.getElementById('percentage-person1-' + i).value;
+        const percentage2 = document.getElementById('percentage-person2-' + i).value;
+        total1 += parseInt(amount) * parseInt(percentage1) / 100.0;
+        total2 += parseInt(amount) * parseInt(percentage2) / 100.0;
+        i++;
     });
     outputPerson1.textContent = `${currency}${total1.toFixed(2)}`;
     outputPerson2.textContent = `${currency}${total2.toFixed(2)}`;
