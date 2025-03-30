@@ -35,6 +35,17 @@ function store(key, value) {
     console.log(`Save to storage (${key}, ${value})`);
 }
 
+function saveToFile(data, filename) {
+    const stringData = data;
+    const file = new Blob([stringData], {type: 'text/plain'});
+    const anchor = document.createElement('a');
+    anchor.href = URL.createObjectURL(file);
+    anchor.download = filename;
+    anchor.click();
+    URL.revokeObjectURL(anchor.href);
+    console.log(`Save to file ${filename} with content ${data}`);
+}
+
 function loadInitial() {
     console.log('Load initial values');
     for (const inputElement of inputElements) {
