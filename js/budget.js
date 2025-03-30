@@ -21,6 +21,7 @@ function listenerTable() {
             const amount = inputElement.value;
             store(id, amount);
             computeTotal();
+            computePersons();
         });
     }
     const inputDescriptions = document.querySelectorAll('input.input-description');
@@ -104,6 +105,23 @@ function computeTotal() {
     console.log('Compute total = ', total);
 }
 
+function computePersons() {
+    const outputPerson1 = document.getElementById('output-person1');
+    const outputPerson2 = document.getElementById('output-person2');
+    const inputExpenses = document.querySelectorAll('input.input-expense');
+    let total1 = 0.0;
+    let total2 = 0.0;
+    inputExpenses.forEach(expense => {
+        const amount = expense.value === '' ? 0 : parseInt(expense.value);
+        const percentage1 = 0.7;
+        const percentage2 = 0.3;
+        total1 += parseInt(amount) * percentage1;
+        total2 += parseInt(amount) * percentage2;
+    });
+    outputPerson1.textContent = `${currency}${total1.toFixed(2)}`;
+    outputPerson2.textContent = `${currency}${total2.toFixed(2)}`;
+}
+
 function activateNightMode() {
     console.log('Register night mode');
     var now = new Date();
@@ -139,5 +157,6 @@ for (const inputElement of inputElements) {
 listenerTable();
 
 computeTotal();
+computePersons();
 
 console.log('Successful');
