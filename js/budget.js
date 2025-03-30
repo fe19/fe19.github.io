@@ -17,10 +17,10 @@ function listenerTable() {
     const inputElements = document.querySelectorAll('input.expense-input');
     for(const inputElement of inputElements) {
         const id = inputElement.id;
-        const amount = inputElement.placeholder;
-        inputElement.addEventListener('input', () => {
+        inputElement.addEventListener('input', (input) => {
+            const amount = inputElement.value;
+            console.log('Table amount =', amount);
             store(id, amount);
-            console.log('compute total');
             computeTotal();
         });
     }
@@ -68,13 +68,22 @@ function loadInitial() {
     }
 }
 
+function loadTable() {
+    const inputExpenses = document.querySelectorAll('input.expense-input');
+    for(const input of inputExpenses) {
+        const key = input.id;
+        const value = localStorage.getItem(key);
+        input.value = value;
+        console.log(`   Load from storage (${key}, ${value})`);
+    }
+}
+
 function computeTotal() {
     const outputTotal = document.getElementById('output-total');
     const inputExpenses = document.querySelectorAll('input.expense-input');
     let total = 0.0;
     inputExpenses.forEach(expense => {
         const amount = expense.value === '' ? 0 : parseInt(expense.value);
-        console.log('Amount =', amount);
         total += parseInt(amount);
     });
     outputTotal.textContent = `${currency}${total.toFixed(2)}`;
@@ -105,6 +114,7 @@ function getOutputSuffix(id) {
 }
 
 loadInitial();
+loadTable();
 
 activateNightMode();
 
