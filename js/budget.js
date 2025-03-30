@@ -14,14 +14,21 @@ function listenerInputPerson(inputPerson) {
 }
 
 function listenerTable() {
-    const inputElements = document.querySelectorAll('input.expense-input');
-    for(const inputElement of inputElements) {
+    const inputElements = document.querySelectorAll('input.input-expense');
+    for (const inputElement of inputElements) {
         const id = inputElement.id;
         inputElement.addEventListener('input', (input) => {
             const amount = inputElement.value;
-            console.log('Table amount =', amount);
             store(id, amount);
             computeTotal();
+        });
+    }
+    const inputDescriptions = document.querySelectorAll('input.input-description');
+    for (const inputDescription of inputDescriptions) {
+        const id = inputDescription.id;
+        inputDescription.addEventListener('input', (input) => {
+            const amount = inputDescription.value;
+            store(id, amount);
         });
     }
 }
@@ -69,8 +76,15 @@ function loadInitial() {
 }
 
 function loadTable() {
-    const inputExpenses = document.querySelectorAll('input.expense-input');
-    for(const input of inputExpenses) {
+    const inputExpenses = document.querySelectorAll('input.input-expense');
+    for (const input of inputExpenses) {
+        const key = input.id;
+        const value = localStorage.getItem(key);
+        input.value = value;
+        console.log(`   Load from storage (${key}, ${value})`);
+    }
+    const inputDescriptions = document.querySelectorAll('input.input-description');
+    for (const input of inputDescriptions) {
         const key = input.id;
         const value = localStorage.getItem(key);
         input.value = value;
@@ -80,7 +94,7 @@ function loadTable() {
 
 function computeTotal() {
     const outputTotal = document.getElementById('output-total');
-    const inputExpenses = document.querySelectorAll('input.expense-input');
+    const inputExpenses = document.querySelectorAll('input.input-expense');
     let total = 0.0;
     inputExpenses.forEach(expense => {
         const amount = expense.value === '' ? 0 : parseInt(expense.value);
