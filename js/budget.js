@@ -14,23 +14,15 @@ function listenerInputPerson(inputPerson) {
     });
 }
 
-function listenerTable() {
-    const inputElements = document.querySelectorAll('input.input-expense');
+function activateListenerTable() {
+    const inputElements = document.querySelectorAll('input.modifiable-table-element');
     for (const inputElement of inputElements) {
         const id = inputElement.id;
         inputElement.addEventListener('input', (input) => {
-            const amount = inputElement.value;
-            store(id, amount);
+            const value = inputElement.value;
+            store(id, value);
             computeTotal();
             computePersons();
-        });
-    }
-    const inputDescriptions = document.querySelectorAll('input.input-description');
-    for (const inputDescription of inputDescriptions) {
-        const id = inputDescription.id;
-        inputDescription.addEventListener('input', (input) => {
-            const amount = inputDescription.value;
-            store(id, amount);
         });
     }
 }
@@ -87,15 +79,8 @@ function loadInitial() {
 }
 
 function loadTable() {
-    const inputExpenses = document.querySelectorAll('input.input-expense');
+    const inputExpenses = document.querySelectorAll('input.modifiable-table-element');
     for (const input of inputExpenses) {
-        const key = input.id;
-        const value = localStorage.getItem(key);
-        input.value = value;
-        console.log(`   Load from storage (${key}, ${value})`);
-    }
-    const inputDescriptions = document.querySelectorAll('input.input-description');
-    for (const input of inputDescriptions) {
         const key = input.id;
         const value = localStorage.getItem(key);
         input.value = value;
@@ -105,7 +90,7 @@ function loadTable() {
 
 function computeTotal() {
     const outputTotal = document.getElementById('output-total');
-    const inputExpenses = document.querySelectorAll('input.input-expense');
+    const inputExpenses = document.querySelectorAll('input.amount');
     let total = 0.0;
     inputExpenses.forEach(expense => {
         const amount = expense.value === '' ? 0 : parseInt(expense.value);
@@ -118,7 +103,7 @@ function computeTotal() {
 function computePersons() {
     const outputPerson1 = document.getElementById('output-person1');
     const outputPerson2 = document.getElementById('output-person2');
-    const inputExpenses = document.querySelectorAll('input.input-expense');
+    const inputExpenses = document.querySelectorAll('input.amount');
     let total1 = 0.0;
     let total2 = 0.0;
     let i = 1;
@@ -157,6 +142,63 @@ function getOutputSuffix(id) {
     return id.substring(7); // output-person1-name -> person1-name
 }
 
+function generateCol(i, text, type, width) {
+    const col = document.createElement('td');
+    const input = document.createElement('input');
+    const id = text + i;
+    const label = document.createElement('label');
+    label.for = id;
+    input.id = id;
+    input.type = type;
+    input.classList.add('form-control');
+    input.classList.add(text);
+    input.classList.add('modifiable-table-element');
+    col.appendChild(input);
+    col.appendChild(label);
+    col.style.width = width;
+    return col;
+}
+
+function generateTable(nbrRows) {
+    const table = document.getElementById('tableCosts');
+
+    // Build header
+    const headRow = document.createElement('tr');
+    const th1= document.createElement('th');
+    const th2= document.createElement('th');
+    const th3= document.createElement('th');
+    const th4= document.createElement('th');
+    const th5= document.createElement('th');
+    th1.textContent = 'Description';
+    th2.textContent = 'Date';
+    th3.textContent = 'Amount';
+    th4.textContent = 'Percentage P1';
+    th5.textContent = 'Percentage P2';
+    headRow.appendChild(th1);
+    headRow.appendChild(th2);
+    headRow.appendChild(th3);
+    headRow.appendChild(th4);
+    headRow.appendChild(th5);
+    table.appendChild(headRow);
+
+    // build body
+    for(let i = 1; i < nbrRows; i++) {
+        const row = document.createElement('tr');
+        const col1 = generateCol(i, 'description', 'text', '40%');
+        const col2 = generateCol(i, 'date', 'text', '10%');
+        const col3 = generateCol(i, 'amount', 'number', '10%');
+        const col4 = generateCol(i, 'percentageFirst', 'number', '10%');
+        const col5 = generateCol(i, 'percentageSecond', 'number', '10%');
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.appendChild(col3);
+        row.appendChild(col4);
+        row.appendChild(col5);
+        table.appendChild(row);
+    }
+}
+
+generateTable(10);
 loadInitial();
 loadTable();
 
@@ -166,7 +208,7 @@ for (const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
 
-listenerTable();
+activateListenerTable();
 
 computeTotal();
 computePersons();
