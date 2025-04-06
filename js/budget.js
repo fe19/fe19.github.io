@@ -14,19 +14,6 @@ function listenerInputPerson(inputPerson) {
     });
 }
 
-function activateListenerTable() {
-    const inputElements = document.querySelectorAll('input.modifiable-table-element');
-    for (const inputElement of inputElements) {
-        const id = inputElement.id;
-        inputElement.addEventListener('input', (input) => {
-            const value = inputElement.value;
-            store(id, value);
-            computeTotal();
-            computePersons();
-        });
-    }
-}
-
 function updateField(idSuffix, value) {
     const id = 'output-' + idSuffix;
     console.log('Debug: ', id);
@@ -47,7 +34,7 @@ function updateTableNames(idSuffix, name) {
     const index =  split[0].substring(6);
     const index1 = 1;
     const person = document.getElementById('table-header-person' + index);
-    person.textContent = name;
+    person.textContent = `${name} %`;
 }
 
 function store(key, value) {
@@ -174,6 +161,8 @@ function generateTable(nbrRows) {
     th3.textContent = 'Amount';
     th4.textContent = 'Percentage P1';
     th5.textContent = 'Percentage P2';
+    th4.id = 'table-header-person1';
+    th5.id = 'table-header-person2';
     headRow.appendChild(th1);
     headRow.appendChild(th2);
     headRow.appendChild(th3);
@@ -198,6 +187,31 @@ function generateTable(nbrRows) {
     }
 }
 
+function getToday() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${day}.${month}.${year}`;
+}
+
+function autoFill(id) {
+    const i = id.match(/\d+$/);
+    const dateId = 'date' + i;
+    const percentagePerson1Id = 'percentageFirst' + i;
+    const percentagePerson2Id = 'percentageSecond' + i;
+    const dateElement = document.getElementById(dateId);
+    const percentagePerson1Element = document.getElementById(percentagePerson1Id);
+    const percentagePerson2Element = document.getElementById(percentagePerson2Id);
+    const date = getToday();
+    const percentagePerson1 = document.getElementById('input-person1-percentage');
+    const percentagePerson2 = document.getElementById('input-person2-percentage');
+    dateElement.value = date;
+    percentagePerson1Element.value = '50';
+    percentagePerson2Element.value = '50';
+    console.log(`Autofill ${dateId}=${date} ${percentagePerson1Id}=${percentagePerson1} ${percentagePerson2Id}=${percentagePerson2}`);
+}
+
 generateTable(10);
 loadInitial();
 loadTable();
@@ -208,7 +222,18 @@ for (const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
 
-activateListenerTable();
+// React on changes inside the table
+const inputTableElements = document.querySelectorAll('input.modifiable-table-element');
+for (const inputElement of inputTableElements) {
+    const id = inputElement.id;
+    inputElement.addEventListener('input', (input) => {
+        const value = inputElement.value;
+        store(id, value);
+        computeTotal();
+        computePersons();
+        autoFill(id);
+    });
+}
 
 computeTotal();
 computePersons();
