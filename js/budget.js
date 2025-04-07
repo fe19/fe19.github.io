@@ -196,6 +196,8 @@ function getToday() {
 }
 
 function autoFill(id) {
+    // TODO only react on description fields
+    // TODO remove values when description is empty
     const i = id.match(/\d+$/);
     const dateId = 'date' + i;
     const percentagePerson1Id = 'percentageFirst' + i;
