@@ -197,8 +197,9 @@ function getToday() {
 
 function autoFill(id) {
     // TODO only react on description fields
-    // TODO remove values when description is empty
     const i = id.match(/\d+$/);
+    const descriptionId = 'description' + i;
+    const description = document.getElementById('description' + i);
     const dateId = 'date' + i;
     const percentagePerson1Id = 'percentageFirst' + i;
     const percentagePerson2Id = 'percentageSecond' + i;
@@ -208,9 +209,16 @@ function autoFill(id) {
     const date = getToday();
     const percentagePerson1 = document.getElementById('input-person1-percentage');
     const percentagePerson2 = document.getElementById('input-person2-percentage');
-    dateElement.value = date;
-    percentagePerson1Element.value = '50';
-    percentagePerson2Element.value = '50';
+    if (description.value === '') {
+        console.log('Description is empty');
+        dateElement.value = '';
+        percentagePerson1Element.value = '';
+        percentagePerson2Element.value = '';
+    } else {
+        dateElement.value = date;
+        percentagePerson1Element.value = '50';
+        percentagePerson2Element.value = '50';
+    }
     console.log(`Autofill ${dateId}=${date} ${percentagePerson1Id}=${percentagePerson1} ${percentagePerson2Id}=${percentagePerson2}`);
 }
 
