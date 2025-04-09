@@ -241,7 +241,12 @@ for (const inputElement of inputTableElements) {
         store(id, value);
         computeTotal();
         computePersons();
-        autoFill(id);
+        const idDescription = id.replace(/\d+$/, '');
+        console.log('     id=', id);
+        console.log('     idDescription=', idDescription);
+        if(idDescription === 'description') {
+            autoFill(id);
+        }
     });
 }
 
