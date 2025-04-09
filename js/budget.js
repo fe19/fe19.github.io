@@ -31,7 +31,7 @@ function updateInput(idSuffix, value) {
 
 function updateTableNames(idSuffix, name) {
     const split = idSuffix.split('-');
-    const index =  split[0].substring(6);
+    const index = split[0].substring(6);
     const index1 = 1;
     const person = document.getElementById('table-header-person' + index);
     person.textContent = `${name} %`;
@@ -151,11 +151,11 @@ function generateTable(nbrRows) {
 
     // Build header
     const headRow = document.createElement('tr');
-    const th1= document.createElement('th');
-    const th2= document.createElement('th');
-    const th3= document.createElement('th');
-    const th4= document.createElement('th');
-    const th5= document.createElement('th');
+    const th1 = document.createElement('th');
+    const th2 = document.createElement('th');
+    const th3 = document.createElement('th');
+    const th4 = document.createElement('th');
+    const th5 = document.createElement('th');
     th1.textContent = 'Description';
     th2.textContent = 'Date';
     th3.textContent = 'Amount';
@@ -171,7 +171,7 @@ function generateTable(nbrRows) {
     table.appendChild(headRow);
 
     // build body
-    for(let i = 1; i < nbrRows; i++) {
+    for (let i = 1; i < nbrRows; i++) {
         const row = document.createElement('tr');
         const col1 = generateCol(i, 'description', 'text', '40%');
         const col2 = generateCol(i, 'date', 'text', '10%');
@@ -243,7 +243,7 @@ for (const inputElement of inputTableElements) {
         const idDescription = id.replace(/\d+$/, '');
         console.log('     id=', id);
         console.log('     idDescription=', idDescription);
-        if(idDescription === 'description') {
+        if (idDescription === 'description') {
             autoFill(id);
         }
     });
