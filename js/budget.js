@@ -196,7 +196,6 @@ function getToday() {
 }
 
 function autoFill(id) {
-    // TODO only react on description fields
     const i = id.match(/\d+$/);
     const descriptionId = 'description' + i;
     const description = document.getElementById('description' + i);
