@@ -215,8 +215,8 @@ function autoFill(id) {
         percentagePerson2Element.value = '';
     } else {
         dateElement.value = date;
-        percentagePerson1Element.value = '50';
-        percentagePerson2Element.value = '50';
+        percentagePerson1Element.value = percentagePerson1.value;
+        percentagePerson2Element.value = percentagePerson2.value;
     }
     console.log(`Autofill ${dateId}=${date} ${percentagePerson1Id}=${percentagePerson1} ${percentagePerson2Id}=${percentagePerson2}`);
 }
