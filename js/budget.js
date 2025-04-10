@@ -16,7 +16,6 @@ function listenerInputPerson(inputPerson) {
 
 function updateField(idSuffix, value) {
     const id = 'output-' + idSuffix;
-    console.log('Debug: ', id);
     const field = document.getElementById(id);
     field.textContent = `${value} spent`;
     console.log(`Update ${field.id} = ${value}`);
