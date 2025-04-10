@@ -9,12 +9,12 @@ function listenerInputPerson(inputPerson) {
         const idSuffix = getInputSuffix(id);
         const value = inputPerson.value;
         store(idSuffix, value);
-        updateField(idSuffix, value);
+        updateNames(idSuffix, value);
         updateTableNames(idSuffix, value);
     });
 }
 
-function updateField(idSuffix, value) {
+function updateNames(idSuffix, value) {
     const id = 'output-' + idSuffix;
     const field = document.getElementById(id);
     field.textContent = `${value} spent`;
@@ -59,7 +59,7 @@ function loadInitial() {
         const value = localStorage.getItem(key);
         console.log(`   Load from storage (${key}, ${value})`);
         updateInput(key, value);
-        updateField(key, value);
+        updateNames(key, value);
         updateTableNames(key, value);
     }
 }
