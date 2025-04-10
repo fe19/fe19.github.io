@@ -15,6 +15,11 @@ function listenerInputPerson(inputPerson) {
 }
 
 function updateNames(idSuffix, value) {
+    const idEnding = idSuffix.split('-')[1];
+    console.log('idEnding=', idEnding);
+    if (idEnding !== 'name') {
+        return
+    }
     const id = 'output-' + idSuffix;
     const field = document.getElementById(id);
     field.textContent = `${value} spent`;
