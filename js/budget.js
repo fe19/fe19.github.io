@@ -34,8 +34,12 @@ function updateInput(idSuffix, value) {
 }
 
 function updateTableNames(idSuffix, name) {
+    const idType = idSuffix.split('-').pop();
     const split = idSuffix.split('-');
     const index = split[0].substring(6);
+    if(idSuffix !== 'name') {
+        return
+    }
     const person = document.getElementById('table-header-person' + index);
     person.textContent = `${name} %`;
 }
