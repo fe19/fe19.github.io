@@ -15,10 +15,9 @@ function listenerInputPerson(inputPerson) {
 }
 
 function updateNames(idSuffix, value) {
-    const idEnding = idSuffix.split('-')[1];
-    console.log('idEnding=', idEnding);
+    const idEnding = idSuffix.split('-').pop();
     if (idEnding !== 'name') {
-        return
+        return;
     }
     const id = 'output-' + idSuffix;
     const field = document.getElementById(id);
@@ -34,12 +33,14 @@ function updateInput(idSuffix, value) {
 }
 
 function updateTableNames(idSuffix, name) {
-    const idType = idSuffix.split('-').pop();
+    const idEnding = idSuffix.split('-').pop();
+    console.log('updating table names');
+    if(idEnding !== 'name') {
+        return;
+    }
     const split = idSuffix.split('-');
     const index = split[0].substring(6);
-    if(idSuffix !== 'name') {
-        return
-    }
+    console.log('update table names');
     const person = document.getElementById('table-header-person' + index);
     person.textContent = `${name} %`;
 }
