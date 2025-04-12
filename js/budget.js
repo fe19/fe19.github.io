@@ -36,7 +36,6 @@ function updateInput(idSuffix, value) {
 function updateTableNames(idSuffix, name) {
     const split = idSuffix.split('-');
     const index = split[0].substring(6);
-    const index1 = 1;
     const person = document.getElementById('table-header-person' + index);
     person.textContent = `${name} %`;
 }
