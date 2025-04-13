@@ -34,13 +34,11 @@ function updateInput(idSuffix, value) {
 
 function updateTableNames(idSuffix, name) {
     const idEnding = idSuffix.split('-').pop();
-    console.log('updating table names');
     if(idEnding !== 'name') {
         return;
     }
     const split = idSuffix.split('-');
     const index = split[0].substring(6);
-    console.log('update table names');
     const person = document.getElementById('table-header-person' + index);
     person.textContent = `${name} %`;
 }
