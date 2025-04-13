@@ -64,7 +64,6 @@ function loadInitial() {
     for (const inputElement of inputElements) {
         const key = getInputSuffix(inputElement.id);
         const value = localStorage.getItem(key);
-        console.log(`   Load from storage (${key}, ${value})`);
         updateInput(key, value);
         updateNames(key, value);
         updateTableNames(key, value);
@@ -77,7 +76,6 @@ function loadTable() {
         const key = input.id;
         const value = localStorage.getItem(key);
         input.value = value;
-        console.log(`   Load from storage (${key}, ${value})`);
     }
 }
 
