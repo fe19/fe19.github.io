@@ -256,8 +256,14 @@ for (const inputElement of inputTableDescription) {
     inputElement.addEventListener('input', (input) => {
         const id = inputElement.id;
         const value = inputElement.value;
-        console.log('Change input ' + id + ' to ' + value);
-        if(true) {
+        const i = id.match(/\d+$/);
+        const dateField = document.getElementById('amount' + i);
+        const percentageFirstField = document.getElementById('percentageFirst' + i);
+        const percentageSecondField = document.getElementById('percentageSecond' + i);
+        const isDateEmpty = dateField.value === '';
+        const isPercentage1Empty = percentageFirstField.value === '';
+        const isPercentage2Empty = percentageSecondField.value === '';
+        if(isDateEmpty && isPercentage1Empty && isPercentage2Empty) {
             autoFill(id);
         }
     });
