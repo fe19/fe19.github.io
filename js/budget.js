@@ -88,7 +88,7 @@ function computeTotal() {
         total += parseInt(amount);
     });
     outputTotal.textContent = `${currency}${total.toFixed(2)}`;
-    console.log('Compute total = ', total);
+    console.log('Compute total amount = ', total);
 }
 
 function computePersons() {
@@ -100,14 +100,17 @@ function computePersons() {
     let i = 1;
     inputExpenses.forEach(expense => {
         const amount = expense.value === '' ? 0 : parseInt(expense.value);
-        const percentage1 = document.getElementById('percentageFirst' + i).value;
-        const percentage2 = document.getElementById('percentageSecond' + i).value;
+        const percentage1Field = document.getElementById('percentageFirst' + i);
+        const percentage2Field = document.getElementById('percentageSecond' + i);
+        const percentage1 = percentage1Field.value === '' ? 0 : parseInt(percentage1Field.value);
+        const percentage2 = percentage2Field.value === '' ? 0 : parseInt(percentage2Field.value);
         total1 += parseInt(amount) * parseInt(percentage1) / 100.0;
         total2 += parseInt(amount) * parseInt(percentage2) / 100.0;
         i++;
     });
     outputPerson1.textContent = `${currency}${total1.toFixed(2)}`;
     outputPerson2.textContent = `${currency}${total2.toFixed(2)}`;
+    console.log('Compute person1 amount = ' + total1 + ' person2 amount = ' + total2);
 }
 
 function activateNightMode() {
