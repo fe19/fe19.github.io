@@ -257,7 +257,7 @@ for (const inputElement of inputTableDescription) {
         const id = inputElement.id;
         const value = inputElement.value;
         const i = id.match(/\d+$/);
-        const dateField = document.getElementById('amount' + i);
+        const dateField = document.getElementById('date' + i);
         const percentageFirstField = document.getElementById('percentageFirst' + i);
         const percentageSecondField = document.getElementById('percentageSecond' + i);
         const isDateEmpty = dateField.value === '';
