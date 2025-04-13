@@ -263,4 +263,4 @@ for (const inputElement of inputTableDescription) {
 computeTotal();
 computePersons();
 
-console.log('Successful');
+console.log('Successful execution of budget');
