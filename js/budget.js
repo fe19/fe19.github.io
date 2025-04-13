@@ -104,8 +104,8 @@ function computePersons() {
     let i = 1;
     inputExpenses.forEach(expense => {
         const amount = expense.value === '' ? 0 : parseInt(expense.value);
-        const percentage1 = document.getElementById('percentage-person1-' + i).value;
-        const percentage2 = document.getElementById('percentage-person2-' + i).value;
+        const percentage1 = document.getElementById('percentageFirst' + i).value;
+        const percentage2 = document.getElementById('percentageSecond' + i).value;
         total1 += parseInt(amount) * parseInt(percentage1) / 100.0;
         total2 += parseInt(amount) * parseInt(percentage2) / 100.0;
         i++;
@@ -248,10 +248,17 @@ for (const inputElement of inputTableElements) {
         store(id, value);
         computeTotal();
         computePersons();
-        const idDescription = id.replace(/\d+$/, '');
-        console.log('     id=', id);
-        console.log('     idDescription=', idDescription);
-        if (idDescription === 'description') {
+    });
+}
+
+// React on changes of the description column in the table
+const inputTableDescription = document.querySelectorAll('input.description');
+for (const inputElement of inputTableDescription) {
+    inputElement.addEventListener('input', (input) => {
+        const id = inputElement.id;
+        const value = inputElement.value;
+        console.log('Change input ' + id + ' to ' + value);
+        if(true) {
             autoFill(id);
         }
     });
