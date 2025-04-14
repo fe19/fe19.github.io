@@ -115,7 +115,7 @@ function activateNightMode() {
     console.log('Register night mode');
     var now = new Date();
     var hours = now.getHours();
-    const inputElements = document.querySelectorAll('.input-group, .input-group-text, .form-control, .table, td');
+    const inputElements = document.querySelectorAll('.input-group, .input-group-text, .form-control, .table, td, .text-body-emphasis');
     if (hours >= 21 || hours <= 5) {
         for (inputElement of inputElements) {
             inputElement.classList.add('color-night');
