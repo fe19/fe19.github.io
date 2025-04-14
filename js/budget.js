@@ -112,7 +112,6 @@ function computePersons() {
 }
 
 function activateNightMode() {
-    console.log('Register night mode');
     var now = new Date();
     var hours = now.getHours();
     const inputElements = document.querySelectorAll('.input-group, .input-group-text, .form-control, .table, td, .text-body-emphasis');
