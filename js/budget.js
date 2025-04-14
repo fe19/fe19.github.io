@@ -157,6 +157,7 @@ function generateTable(nbrRows) {
     const th3 = document.createElement('th');
     const th4 = document.createElement('th');
     const th5 = document.createElement('th');
+    th1.classList.add('input-group-lg');
     th1.textContent = 'Description';
     th2.textContent = 'Date';
     th3.textContent = 'Amount';
