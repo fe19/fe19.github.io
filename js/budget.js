@@ -18,7 +18,7 @@ function updateNames(idSuffix, value) {
     }
     const id = 'output-' + idSuffix;
     const field = document.getElementById(id);
-    field.textContent = `${value} paid`;
+    field.textContent = `${value} pays`;
     console.log(`Update ${field.id} = ${value}`);
 }
 
