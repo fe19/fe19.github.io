@@ -1,6 +1,3 @@
-const inputElements = document.getElementsByClassName('input-configuration'); // [input-person1-name, input-person2-name]
-const outputElementsModifiable = document.getElementsByClassName('output-name-modifiable'); // [output-person1-name, output-person2-name]
-
 const currency = '€';
 
 function listenerInputPerson(inputPerson) {
@@ -61,6 +58,7 @@ function saveToFile(data, filename) {
 
 function loadInitial() {
     console.log('Load initial values');
+    const inputElements = document.getElementsByClassName('input-configuration'); // [input-person1-name, input-person2-name]
     for (const inputElement of inputElements) {
         const key = getInputSuffix(inputElement.id);
         const value = localStorage.getItem(key);
@@ -234,6 +232,7 @@ loadTable();
 
 activateNightMode();
 
+const inputElements = document.getElementsByClassName('input-configuration');
 for (const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
