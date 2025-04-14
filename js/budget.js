@@ -138,15 +138,12 @@ function generateCol(i, text, type, width) {
     const col = document.createElement('td');
     const input = document.createElement('input');
     const id = text + i;
-    const label = document.createElement('label');
-    label.for = id;
     input.id = id;
     input.type = type;
     input.classList.add('form-control');
     input.classList.add(text);
     input.classList.add('modifiable-table-element');
     col.appendChild(input);
-    col.appendChild(label);
     col.style.width = width;
     return col;
 }
