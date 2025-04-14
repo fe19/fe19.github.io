@@ -19,6 +19,6 @@ h5 {
 }
 
 .color-night {
-    background-color: #355C7D;
-    color: white;
+    background-color: #355C7D !important;
+    color: white !important;
 }
