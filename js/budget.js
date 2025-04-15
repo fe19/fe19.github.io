@@ -159,8 +159,8 @@ function generateTable(nbrRows) {
     const th5 = document.createElement('th');
     th1.classList.add('input-group-lg');
     th1.textContent = 'Description';
-    th2.textContent = 'Date';
-    th3.textContent = 'Amount';
+    th2.textContent = 'Amount';
+    th3.textContent = 'Date';
     th4.textContent = 'Percentage P1';
     th5.textContent = 'Percentage P2';
     th4.id = 'table-header-person1';
@@ -176,8 +176,8 @@ function generateTable(nbrRows) {
     for (let i = 1; i < nbrRows; i++) {
         const row = document.createElement('tr');
         const col1 = generateCol(i, 'description', 'text', '40%');
-        const col2 = generateCol(i, 'date', 'text', '10%');
-        const col3 = generateCol(i, 'amount', 'number', '10%');
+        const col2 = generateCol(i, 'amount', 'number', '10%');
+        const col3 = generateCol(i, 'date', 'text', '10%');
         const col4 = generateCol(i, 'percentageFirst', 'number', '10%');
         const col5 = generateCol(i, 'percentageSecond', 'number', '10%');
         row.appendChild(col1);
