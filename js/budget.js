@@ -225,7 +225,7 @@ function autoFill(id) {
     console.log(`Autofill ${dateId}=${date} ${percentagePerson1Id}=${percentagePerson1} ${percentagePerson2Id}=${percentagePerson2}`);
 }
 
-generateTable(10);
+generateTable(20);
 loadInitial();
 loadTable();
 
@@ -272,6 +272,11 @@ inputCurrency.addEventListener('input', (input) => {
     currency = inputCurrency.value;
     computeTotal();
     computePersons();
+});
+
+const inputNumberRows = document.getElementById('input-number-rows');
+inputNumberRows.addEventListener('input', (input) => {
+    const numberRows = inputNumberRows.value;
 });
 
 computeTotal();
