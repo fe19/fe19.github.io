@@ -1,5 +1,4 @@
-const currency = '€';
-
+let currency = '€';
 function listenerInputPerson(inputPerson) {
     inputPerson.addEventListener('input', () => {
         const id = inputPerson.id;
@@ -267,6 +266,13 @@ for (const inputElement of inputTableDescription) {
         }
     });
 }
+
+const inputCurrency = document.getElementById('input-currency');
+inputCurrency.addEventListener('input', (input) => {
+    currency = inputCurrency.value;
+    computeTotal();
+    computePersons();
+});
 
 computeTotal();
 computePersons();
