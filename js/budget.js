@@ -268,4 +268,4 @@ for (const inputElement of inputTableDescription) {
 computeTotal();
 computePersons();
 
-console.log('Successful execution of budget');
+console.log('Successful execution of budget.js');
