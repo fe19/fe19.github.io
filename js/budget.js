@@ -132,7 +132,7 @@ function getOutputSuffix(id) {
     return id.substring(7); // output-person1-name -> person1-name
 }
 
-function validatePercentage() {
+function validatePercentages() {
     const inputPercentagePerson1 = document.getElementById('input-person1-percentage');
     const inputPercentagePerson2 = document.getElementById('input-person2-percentage');
     inputPercentagePerson1.addEventListener('input', (input) => {
@@ -294,6 +294,6 @@ inputNumberRows.addEventListener('input', (input) => {
 
 computeTotal();
 computePersons();
-validatePercentage();
+validatePercentages();
 
 console.log('Successful execution of budget.js');
