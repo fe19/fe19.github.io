@@ -137,11 +137,13 @@ function getOutputSuffix(id) {
     return id.substring(7); // output-person1-name -> person1-name
 }
 
+function validatePercentage(percentage1, percentage2) {
+}
+
 function validatePercentage(inputElementListener, inputElementOther) {
-    inputElementListener.addEventListener('input', (input) => {
-        const percentage1 = parseInt(inputElementListener.value);
-        const percentage2 = parseInt(inputElementOther.value);
-        const sum = percentage1 + percentage2;
+    const percentage1 = parseInt(inputElementListener.value);
+    const percentage2 = parseInt(inputElementOther.value);
+    const sum = percentage1 + percentage2;
         if(sum > 100) {
             console.log('percentage > 100%');
             inputElementListener.style.setProperty('background', 'yellow', 'important');
@@ -158,14 +160,20 @@ function validatePercentage(inputElementListener, inputElementOther) {
                 inputElementOther.style.setProperty('color', 'white', 'important');
             }
         }
+
+}
+
+function validatePercentageElements(inputElementListener, inputElementOther) {
+    inputElementListener.addEventListener('input', (input) => {
+        validatePercentage(inputElementListener, inputElementOther)
     });
 }
 
 function validatePercentages() {
     const inputPercentagePerson1 = document.getElementById('input-person1-percentage');
     const inputPercentagePerson2 = document.getElementById('input-person2-percentage');
-    validatePercentage(inputPercentagePerson1, inputPercentagePerson2);
-    validatePercentage(inputPercentagePerson2, inputPercentagePerson1);
+    validatePercentageElements(inputPercentagePerson1, inputPercentagePerson2);
+    validatePercentageElements(inputPercentagePerson2, inputPercentagePerson1);
 }
 
 function generateCol(i, text, type, width) {
@@ -310,8 +318,8 @@ for(const inputElement of inputTablePercentage) {
     const secondId = firstId.replace('First', 'Second');
     const percentageFirst = document.getElementById(firstId);
     const percentageSecond = document.getElementById(secondId);
-    validatePercentage(percentageFirst, percentageSecond);
-    validatePercentage(percentageSecond, percentageFirst);
+    validatePercentageElements(percentageFirst, percentageSecond);
+    validatePercentageElements(percentageSecond, percentageFirst);
 }
 
 const inputCurrency = document.getElementById('input-currency');
