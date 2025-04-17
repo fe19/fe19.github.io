@@ -139,6 +139,9 @@ function validatePercentage(inputElementListener, inputElementOther) {
         const sum = percentage1 + percentage2;
         if(sum > 100) {
             console.log('percentage > 100%');
+            inputElementListener.style.backgroundColor = 'yellow';
+        } else {
+            inputElementListener.style.backgroundColor = 'white';
         }
     });
 }
