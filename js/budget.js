@@ -163,6 +163,8 @@ function validatePercentageElements(inputElementListener, inputElementOther) {
 }
 
 function validatePercentage(inputElementListener, inputElementOther) {
+    // Validate on initial page load
+    validatePercentageElements(inputElementListener, inputElementOther);
     inputElementListener.addEventListener('input', (input) => {
         validatePercentageElements(inputElementListener, inputElementOther)
     });
