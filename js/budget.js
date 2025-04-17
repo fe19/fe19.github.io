@@ -132,17 +132,22 @@ function getOutputSuffix(id) {
     return id.substring(7); // output-person1-name -> person1-name
 }
 
-function validatePercentages() {
-    const inputPercentagePerson1 = document.getElementById('input-person1-percentage');
-    const inputPercentagePerson2 = document.getElementById('input-person2-percentage');
-    inputPercentagePerson1.addEventListener('input', (input) => {
-        const percentage1 = parseInt(inputPercentagePerson1.value);
-        const percentage2 = parseInt(inputPercentagePerson2.value);
+function validatePercentage(inputElementListener, inputElementOther) {
+    inputElementListener.addEventListener('input', (input) => {
+        const percentage1 = parseInt(inputElementListener.value);
+        const percentage2 = parseInt(inputElementOther.value);
         const sum = percentage1 + percentage2;
         if(sum > 100) {
             console.log('percentage > 100%');
         }
     });
+}
+
+function validatePercentages() {
+    const inputPercentagePerson1 = document.getElementById('input-person1-percentage');
+    const inputPercentagePerson2 = document.getElementById('input-person2-percentage');
+    validatePercentage(inputPercentagePerson1, inputPercentagePerson2);
+    validatePercentage(inputPercentagePerson2, inputPercentagePerson1);
 }
 
 function generateCol(i, text, type, width) {
