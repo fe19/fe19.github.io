@@ -1,4 +1,6 @@
 let currency = '€';
+let isNightModeActive = false;
+
 function listenerInputPerson(inputPerson) {
     inputPerson.addEventListener('input', () => {
         const id = inputPerson.id;
@@ -121,6 +123,9 @@ function activateNightMode() {
         document.body.style.background = "#355C7D";
         document.body.style.color = "white";
         console.log('Switch to night mode');
+        isNightModeActive = true;
+    } else {
+        isNightModeActive = false;
     }
 }
 
@@ -139,11 +144,19 @@ function validatePercentage(inputElementListener, inputElementOther) {
         const sum = percentage1 + percentage2;
         if(sum > 100) {
             console.log('percentage > 100%');
-            inputElementListener.style.backgroundColor = 'yellow';
-            inputElementOther.style.backgroundColor = 'yellow';
+            inputElementListener.style.setProperty('background', 'yellow', 'important');
+            inputElementOther.style.setProperty('background', 'yellow', 'important');
+            if(isNightModeActive) {
+                inputElementListener.style.setProperty('color', 'black', 'important');
+                inputElementOther.style.setProperty('color', 'black', 'important');
+            }
         } else {
             inputElementListener.style.backgroundColor = 'white';
             inputElementOther.style.backgroundColor = 'white';
+            if(isNightModeActive) {
+                inputElementListener.style.setProperty('color', 'white', 'important');
+                inputElementOther.style.setProperty('color', 'white', 'important');
+            }
         }
     });
 }
@@ -288,6 +301,17 @@ for (const inputElement of inputTableDescription) {
             autoFill(id);
         }
     });
+}
+
+// React on changes or the percentage column of the table
+const inputTablePercentage = document.querySelectorAll('input.percentageFirst');
+for(const inputElement of inputTablePercentage) {
+    const firstId = inputElement.id;
+    const secondId = firstId.replace('First', 'Second');
+    const percentageFirst = document.getElementById(firstId);
+    const percentageSecond = document.getElementById(secondId);
+    validatePercentage(percentageFirst, percentageSecond);
+    validatePercentage(percentageSecond, percentageFirst);
 }
 
 const inputCurrency = document.getElementById('input-currency');
