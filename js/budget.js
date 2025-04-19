@@ -331,6 +331,8 @@ for (const inputElement of inputTableDescription) {
         if(descriptionField.value == '' && amountField.value == '') {
             autoErase(i);
         }
+        validatePercentage(percentageFirstField, percentageSecondField);
+        validatePercentage(percentageSecondField, percentageFirstField);
     });
 }
 
