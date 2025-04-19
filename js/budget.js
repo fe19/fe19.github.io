@@ -271,12 +271,15 @@ function autoFill(id) {
 }
 
 function autoErase(i) {
-    const dateField = document.getElementById('date' + i);
-    const percentageFirstField = document.getElementById('percentageFirst' + i);
-    const percentageSecondField = document.getElementById('percentageSecond' + i);
-    dateField.value = '';
-    percentageFirstField.value = '';
-    percentageSecondField.value = '';
+    const dateElement = document.getElementById('date' + i);
+    const percentagePerson1Element = document.getElementById('percentageFirst' + i);
+    const percentagePerson2Element = document.getElementById('percentageSecond' + i);
+    dateElement.value = '';
+    percentagePerson1Element.value = '';
+    percentagePerson2Element.value = '';
+    store(dateElement.id, '');
+    store(percentagePerson1Element.id, '');
+    store(percentagePerson2Element.id, '');
 }
 
 generateTable(20);
