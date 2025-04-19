@@ -270,6 +270,15 @@ function autoFill(id) {
     console.log(`Autofill ${dateId}=${date} ${percentagePerson1Id}=${percentagePerson1} ${percentagePerson2Id}=${percentagePerson2}`);
 }
 
+function autoErase(i) {
+    const dateField = document.getElementById('date' + i);
+    const percentageFirstField = document.getElementById('percentageFirst' + i);
+    const percentageSecondField = document.getElementById('percentageSecond' + i);
+    dateField.value = '';
+    percentageFirstField.value = '';
+    percentageSecondField.value = '';
+}
+
 generateTable(20);
 loadInitial();
 loadTable();
@@ -300,6 +309,8 @@ for (const inputElement of inputTableDescription) {
         const id = inputElement.id;
         const value = inputElement.value;
         const i = id.match(/\d+$/);
+        const descriptionField = document.getElementById('description' + i);
+        const amountField = document.getElementById('amount' + i);
         const dateField = document.getElementById('date' + i);
         const percentageFirstField = document.getElementById('percentageFirst' + i);
         const percentageSecondField = document.getElementById('percentageSecond' + i);
@@ -309,6 +320,9 @@ for (const inputElement of inputTableDescription) {
         // TODO make autofill remove date and percentage if description and amount is empty
         if(isDateEmpty && isPercentage1Empty && isPercentage2Empty) {
             autoFill(id);
+        }
+        if(descriptionField.value == '' && amountField.value == '') {
+            autoErase(i);
         }
     });
 }
