@@ -138,6 +138,7 @@ function getOutputSuffix(id) {
 }
 
 function validatePercentage(percentage1, percentage2) {
+    // TODO simplify functions
 }
 
 function validatePercentageElements(inputElementListener, inputElementOther) {
@@ -267,6 +268,7 @@ function autoFill(id) {
         store(percentagePerson1Element.id, percentagePerson1.value);
         store(percentagePerson2Element.id, percentagePerson2.value);
     }
+
     console.log(`Autofill ${dateId}=${date} ${percentagePerson1Id}=${percentagePerson1} ${percentagePerson2Id}=${percentagePerson2}`);
 }
 
@@ -280,6 +282,8 @@ function autoErase(i) {
     store(dateElement.id, '');
     store(percentagePerson1Element.id, '');
     store(percentagePerson2Element.id, '');
+
+    console.log(`Auto Erase ${dateElement.id}=${dateElement.value} ${percentagePerson1Element.id}=${percentagePerson1Element.value} ${percentagePerson2Element.id}=${percentagePerson2Element.value}`);
 }
 
 generateTable(20);
