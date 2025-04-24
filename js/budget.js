@@ -211,6 +211,8 @@ function generateSelectCol(i, text, optionName1, optionName2, width) {
     option2.value = '2';
     option1.text = optionName1;
     option2.text = optionName2;
+    option1.classList.add('name1');
+    option2.classList.add('name2');
     select.appendChild(option1);
     select.appendChild(option2);
     col.appendChild(select);
@@ -391,6 +393,27 @@ const inputNumberRows = document.getElementById('input-number-rows');
 inputNumberRows.addEventListener('input', (input) => {
     const numberRows = inputNumberRows.value;
 });
+
+const configName1 = document.getElementById('input-person1-name');
+configName1.addEventListener('input', (input) => {
+    const options = document.querySelectorAll('option.name1');
+    options.forEach( function(option) {
+        option.text = configName1.value;
+    });
+});
+
+addEventListenerConfigName(1);
+addEventListenerConfigName(2);
+
+function addEventListenerConfigName(i) {
+    const configElement = document.getElementById(`input-person${i}-name`);
+    configElement.addEventListener('input', (input) => {
+        const options = document.querySelectorAll('option.name' + i);
+        options.forEach( function(option) {
+        option.text = configElement.value;
+        });
+    });
+}
 
 computeTotal();
 computePersons();
