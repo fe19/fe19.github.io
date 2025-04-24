@@ -178,7 +178,7 @@ function validatePercentages() {
     validatePercentage(inputPercentagePerson2, inputPercentagePerson1);
 }
 
-function generateCol(i, text, type, width) {
+function generateTextCol(i, text, type, width) {
     const col = document.createElement('td');
     const input = document.createElement('input');
     const id = text + i;
@@ -223,12 +223,12 @@ function generateTable(nbrRows) {
     // build body
     for (let i = 1; i < nbrRows; i++) {
         const row = document.createElement('tr');
-        const col1 = generateCol(i, 'description', 'text', '40%');
-        const col2 = generateCol(i, 'amount', 'number', '10%');
-        const col3 = generateCol(i, 'paid', 'text', 'F');
-        const col4 = generateCol(i, 'date', 'text', '10%');
-        const col5 = generateCol(i, 'percentageFirst', 'number', '10%');
-        const col6 = generateCol(i, 'percentageSecond', 'number', '10%');
+        const col1 = generateTextCol(i, 'description', 'text', '40%');
+        const col2 = generateTextCol(i, 'amount', 'number', '10%');
+        const col3 = generateTextCol(i, 'paid', 'text', 'F');
+        const col4 = generateTextCol(i, 'date', 'text', '10%');
+        const col5 = generateTextCol(i, 'percentageFirst', 'number', '10%');
+        const col6 = generateTextCol(i, 'percentageSecond', 'number', '10%');
         row.appendChild(col1);
         row.appendChild(col2);
         row.appendChild(col3);
