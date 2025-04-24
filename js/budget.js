@@ -192,6 +192,27 @@ function generateTextCol(i, text, type, width) {
     return col;
 }
 
+function generateSelectCol(i, text, type, width) {
+    const col = document.createElement('td');
+    const select = document.createElement('select');
+    const id = text + i;
+    select.id = id;
+    select.classList.add('form-select');
+    select.classList.add(text);
+    select.classList.add('modifiable-table-element');
+    const option1 = document.createElement('option');
+    const option2 = document.createElement('option');
+    option1.value = '1';
+    option2.value = '2';
+    option1.text = 'Person 1';
+    option2.text = 'Person 2';
+    select.appendChild(option1);
+    select.appendChild(option2);
+    col.appendChild(select);
+    col.style.width = width;
+    return col;
+}
+
 function generateTable(nbrRows) {
     const table = document.getElementById('tableCosts');
 
@@ -225,7 +246,7 @@ function generateTable(nbrRows) {
         const row = document.createElement('tr');
         const col1 = generateTextCol(i, 'description', 'text', '40%');
         const col2 = generateTextCol(i, 'amount', 'number', '10%');
-        const col3 = generateTextCol(i, 'paid', 'text', 'F');
+        const col3 = generateSelectCol(i, 'paid', '10%');
         const col4 = generateTextCol(i, 'date', 'text', '10%');
         const col5 = generateTextCol(i, 'percentageFirst', 'number', '10%');
         const col6 = generateTextCol(i, 'percentageSecond', 'number', '10%');
