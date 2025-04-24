@@ -69,6 +69,10 @@ function loadInitial() {
     }
 }
 
+function getPersonName(i) {
+    return document.getElementsById(`input-person${i}-name``).value;
+}
+
 function loadTable() {
     const inputExpenses = document.querySelectorAll('input.modifiable-table-element');
     for (const input of inputExpenses) {
