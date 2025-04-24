@@ -23,6 +23,14 @@ function updateNames(idSuffix, value) {
     console.log(`Update ${field.id} = ${value}`);
 }
 
+function updateSelectNames(i) {
+    const configElement = document.getElementById(`input-person${i}-name`);
+    const options = document.querySelectorAll('option.name' + i);
+    options.forEach( function(option) {
+        option.text = configElement.value;
+    });
+}
+
 function updateInput(idSuffix, value) {
     const id = 'input-' + idSuffix;
     const element = document.getElementById(id);
@@ -66,6 +74,8 @@ function loadInitial() {
         updateInput(key, value);
         updateNames(key, value);
         updateTableNames(key, value);
+        updateSelectNames(1);
+        updateSelectNames(2);
     }
 }
 
@@ -333,6 +343,16 @@ for (const inputElement of inputElements) {
     listenerInputPerson(inputElement);
 }
 
+function addEventListenerConfigName(i) {
+    const configElement = document.getElementById(`input-person${i}-name`);
+    configElement.addEventListener('input', (input) => {
+        const options = document.querySelectorAll('option.name' + i);
+        options.forEach( function(option) {
+        option.text = configElement.value;
+        });
+    });
+}
+
 // React on changes inside the table
 const inputTableElements = document.querySelectorAll('input.modifiable-table-element');
 for (const inputElement of inputTableElements) {
@@ -405,15 +425,6 @@ configName1.addEventListener('input', (input) => {
 addEventListenerConfigName(1);
 addEventListenerConfigName(2);
 
-function addEventListenerConfigName(i) {
-    const configElement = document.getElementById(`input-person${i}-name`);
-    configElement.addEventListener('input', (input) => {
-        const options = document.querySelectorAll('option.name' + i);
-        options.forEach( function(option) {
-        option.text = configElement.value;
-        });
-    });
-}
 
 computeTotal();
 computePersons();
