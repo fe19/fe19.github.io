@@ -70,7 +70,8 @@ function loadInitial() {
 }
 
 function getPersonName(i) {
-    return document.getElementsById(`input-person${i}-name``).value;
+    console.log('Person =', document.getElementById(`input-person${i}-name`).value);
+    return document.getElementById(`input-person${i}-name`).value;
 }
 
 function loadTable() {
@@ -245,8 +246,8 @@ function generateTable(nbrRows) {
     headRow.appendChild(th6);
     table.appendChild(headRow);
 
-    const p1 = 'Person 1';
-    const p2 = 'Person 2';
+    const p1 = getPersonName(1);
+    const p2 = getPersonName(2);
 
     // build body
     for (let i = 1; i < nbrRows; i++) {
