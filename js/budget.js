@@ -225,14 +225,16 @@ function generateTable(nbrRows) {
         const row = document.createElement('tr');
         const col1 = generateCol(i, 'description', 'text', '40%');
         const col2 = generateCol(i, 'amount', 'number', '10%');
-        const col3 = generateCol(i, 'date', 'text', '10%');
-        const col4 = generateCol(i, 'percentageFirst', 'number', '10%');
-        const col5 = generateCol(i, 'percentageSecond', 'number', '10%');
+        const col3 = generateCol(i, 'paid', 'text', 'F');
+        const col4 = generateCol(i, 'date', 'text', '10%');
+        const col5 = generateCol(i, 'percentageFirst', 'number', '10%');
+        const col6 = generateCol(i, 'percentageSecond', 'number', '10%');
         row.appendChild(col1);
         row.appendChild(col2);
         row.appendChild(col3);
         row.appendChild(col4);
         row.appendChild(col5);
+        row.appendChild(col6);
         table.appendChild(row);
     }
 }
