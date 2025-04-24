@@ -324,7 +324,6 @@ for (const inputElement of inputTableDescription) {
         const isDateEmpty = dateField.value === '';
         const isPercentage1Empty = percentageFirstField.value === '';
         const isPercentage2Empty = percentageSecondField.value === '';
-        // TODO make autofill remove date and percentage if description and amount is empty
         if(isDateEmpty && isPercentage1Empty && isPercentage2Empty) {
             autoFill(id);
         }
