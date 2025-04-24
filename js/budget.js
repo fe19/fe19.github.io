@@ -202,19 +202,22 @@ function generateTable(nbrRows) {
     const th3 = document.createElement('th');
     const th4 = document.createElement('th');
     const th5 = document.createElement('th');
+    const th6 = document.createElement('th');
     th1.classList.add('input-group-lg');
     th1.textContent = 'Description';
     th2.textContent = 'Amount';
-    th3.textContent = 'Date';
-    th4.textContent = 'Percentage P1';
-    th5.textContent = 'Percentage P2';
-    th4.id = 'table-header-person1';
-    th5.id = 'table-header-person2';
+    th3.textContent = 'Paid by';
+    th4.textContent = 'Date';
+    th5.textContent = 'Percentage P1';
+    th6.textContent = 'Percentage P2';
+    th5.id = 'table-header-person1';
+    th6.id = 'table-header-person2';
     headRow.appendChild(th1);
     headRow.appendChild(th2);
     headRow.appendChild(th3);
     headRow.appendChild(th4);
     headRow.appendChild(th5);
+    headRow.appendChild(th6);
     table.appendChild(headRow);
 
     // build body
