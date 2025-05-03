@@ -114,7 +114,7 @@ function computePersonsPaid() {
     let totalPaid2 = 0.0;
     let i = 0;
     selectPays.forEach(selectPaid => {
-        // TODO
+        if(selectPaid == person1) totalPaid1 += outputPaidPerson1;
     });
     outputPerson1.textContent = `${currency}${totalPaid1.toFixed(2)}`;
     outputPerson2.textContent = `${currency}${totalPaid2.toFixed(2)}`;
