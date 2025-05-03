@@ -105,6 +105,22 @@ function computeTotal() {
     console.log('Compute total amount = ', total);
 }
 
+// TODO add new rows with how much each person paid
+function computePersonsPaid() {
+    const outputPaidPerson1 = document.getElementById('output-paid-person1');   // TODO create HTML
+    const outputPaidPerson2 = document.getElementById('output-paid-person2');
+    const selectPays = document.querySelectorAll('select.paid');
+    let totalPaid1 = 0.0;
+    let totalPaid2 = 0.0;
+    let i = 0;
+    selectPays.forEach(selectPaid => {
+
+    });
+    outputPerson1.textContent = `${currency}${totalPaid1.toFixed(2)}`;
+    outputPerson2.textContent = `${currency}${totalPaid2.toFixed(2)}`;
+    console.log('Compute person1 paid = ' + totalPaid1 + ' person2 paid = ' + totalPaid2);
+}
+
 function computePersons() {
     const outputPerson1 = document.getElementById('output-person1');
     const outputPerson2 = document.getElementById('output-person2');
