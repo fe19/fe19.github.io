@@ -118,8 +118,8 @@ function computePersonsPaid() {
         if(selectPaid == person1) totalPaid1 += outputPaidPerson1;
         if(selectPaid == person2) totalPaid2 += outputPaidPerson2;
     });
-    outputPerson1.textContent = `${currency}${totalPaid1.toFixed(2)}`;
-    outputPerson2.textContent = `${currency}${totalPaid2.toFixed(2)}`;
+    outputPaidPerson1.textContent = `${currency}${totalPaid1.toFixed(2)}`;
+    outputPaidPerson2.textContent = `${currency}${totalPaid2.toFixed(2)}`;
     console.log('Compute person1 paid = ' + totalPaid1 + ' person2 paid = ' + totalPaid2);
 }
 
