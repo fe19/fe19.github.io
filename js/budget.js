@@ -17,10 +17,10 @@ function updateNames(idSuffix, value) {
     if (idEnding !== 'name') {
         return;
     }
-    const id = 'output-' + idSuffix;
-    const field = document.getElementById(id);
+    const idPays = 'output-' + idSuffix;
+    const field = document.getElementById(idPays);
     field.textContent = `${value} pays`;
-    console.log(`Update ${field.id} = ${value}`);
+    console.log(`Update ${field.idPays} = ${value}`);
 }
 
 function updateSelectNames(i) {
