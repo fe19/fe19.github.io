@@ -107,7 +107,7 @@ function computeTotal() {
 
 // TODO add new rows with how much each person paid
 function computePersonsPaid() {
-    const outputPaidPerson1 = document.getElementById('output-paid-person1');   // TODO create HTML
+    const outputPaidPerson1 = document.getElementById('output-paid-person1');
     const outputPaidPerson2 = document.getElementById('output-paid-person2');
     const selectPays = document.querySelectorAll('select.paid');
     let totalPaid1 = 0.0;
