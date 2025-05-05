@@ -393,6 +393,12 @@ for (const inputElement of inputTableElements) {
         computePersons();
     });
 }
+const selectTableElements = document.querySelectorAll('select.modifiable-table-element');
+for(const selectElement of selectTableElements) {
+    selectElement.addEventListener('change', (select) => {
+        computePersonsPaid();
+    });
+}
 
 // React on changes of the description column in the table
 const inputTableDescription = document.querySelectorAll('input.description');
