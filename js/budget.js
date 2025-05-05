@@ -83,7 +83,7 @@ function loadInitial() {
 }
 
 function getPersonName(i) {
-    console.log('Person =', document.getElementById(`input-person${i}-name`).value);
+    console.log('Person =', document.getElementById(`input-person${i}-name`).value); // TODO remove comment
     return document.getElementById(`input-person${i}-name`).value;
 }
 
@@ -118,6 +118,7 @@ function computePersonsPaid() {
     let i = 0;
     selectPays.forEach(selectPaid => {
         // TODO Verify implementation
+        console.log('selectPaid =',selectPaid);
         if(selectPaid == person1) totalPaid1 += outputPaidPerson1;
         if(selectPaid == person2) totalPaid2 += outputPaidPerson2;
     });
