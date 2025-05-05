@@ -112,15 +112,21 @@ function computeTotal() {
 function computePersonsPaid() {
     const outputPaidPerson1 = document.getElementById('output-paid-person1');
     const outputPaidPerson2 = document.getElementById('output-paid-person2');
+    const person1 = document.getElementById('input-person1-name').value;
+    const person2 = document.getElementById('input-person2-name').value;
     const selectPays = document.querySelectorAll('select.paid');
     let totalPaid1 = 0.0;
     let totalPaid2 = 0.0;
-    let i = 0;
+    let i = 1;
     selectPays.forEach(selectPaid => {
         // TODO Verify implementation
-        console.log('selectPaid =',selectPaid);
-        if(selectPaid == person1) totalPaid1 += outputPaidPerson1;
-        if(selectPaid == person2) totalPaid2 += outputPaidPerson2;
+        const selectedPerson = selectPaid.options[selectPaid.selectedIndex].text;
+        const amountElement = document.getElementById('amount' + i);
+        const amount = amountElement.value == '' ? 0 : parseInt(amountElement.value);
+        console.log('selectedPerson = ' + selectedPerson + ' person1 = ' + person1);
+        if(selectedPerson == person1) totalPaid1 += amount;
+        if(selectedPerson == person2) totalPaid2 += amount;
+        i++;
     });
     outputPaidPerson1.textContent = `${currency}${totalPaid1.toFixed(2)}`;
     outputPaidPerson2.textContent = `${currency}${totalPaid2.toFixed(2)}`;
@@ -383,6 +389,7 @@ for (const inputElement of inputTableElements) {
         const value = inputElement.value;
         store(id, value);
         computeTotal();
+        computePersonsPaid();
         computePersons();
     });
 }
@@ -428,6 +435,7 @@ const inputCurrency = document.getElementById('input-currency');
 inputCurrency.addEventListener('input', (input) => {
     currency = inputCurrency.value;
     computeTotal();
+    computePersonsPaid();
     computePersons();
 });
 
@@ -449,6 +457,7 @@ addEventListenerConfigName(2);
 
 
 computeTotal();
+computePersonsPaid();
 computePersons();
 validatePercentages();
 
