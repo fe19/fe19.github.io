@@ -18,9 +18,12 @@ function updateNames(idSuffix, value) {
         return;
     }
     const idPays = 'output-' + idSuffix;
-    const field = document.getElementById(idPays);
-    field.textContent = `${value} pays`;
-    console.log(`Update ${field.idPays} = ${value}`);
+    const fieldPays = document.getElementById(idPays);
+    fieldPays.textContent = `${value} pays`;
+    const idPayed = 'output-paid-' + idSuffix;
+    const fieldPayed = document.getElementById(idPayed);
+    fieldPayed.textContent = `${value} payed`;
+    console.log(`Update ${fieldPayed.idPays} = ${value}`);
 }
 
 function updateSelectNames(i) {
