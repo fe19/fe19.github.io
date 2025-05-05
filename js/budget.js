@@ -105,7 +105,7 @@ function computeTotal() {
     console.log('Compute total amount = ', total);
 }
 
-// TODO add new rows with how much each person paid
+
 function computePersonsPaid() {
     const outputPaidPerson1 = document.getElementById('output-paid-person1');
     const outputPaidPerson2 = document.getElementById('output-paid-person2');
