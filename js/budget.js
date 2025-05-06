@@ -402,7 +402,7 @@ for (const inputElement of inputTableElements) {
 }
 const selectTableElements = document.querySelectorAll('select.modifiable-table-element');
 for(const selectElement of selectTableElements) {
-    const id = inputElement.id;
+    const id = selectElement.id;
     selectElement.addEventListener('change', (select) => {
         const value = selectElement.value
         console.log('TEST Store ' + value);
