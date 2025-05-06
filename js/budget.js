@@ -130,7 +130,6 @@ function computePersonsPaid() {
         const selectedPerson = selectPaid.options[selectPaid.selectedIndex].text;
         const amountElement = document.getElementById('amount' + i);
         const amount = amountElement.value == '' ? 0 : parseInt(amountElement.value);
-        console.log('selectedPerson = ' + selectedPerson + ' person1 = ' + person1);
         if(selectedPerson == person1) totalPaid1 += amount;
         if(selectedPerson == person2) totalPaid2 += amount;
         i++;
