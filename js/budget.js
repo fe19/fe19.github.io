@@ -98,8 +98,8 @@ function loadTable() {
     for (const select of modifiableSelects) {
         const key = select.id;
         const value = localStorage.getItem(key);
-        // select.value = value; TODO activate
-        console.log('TEST Loaded value = ' + value);
+        select.value = value;
+        console.log('TEST Loaded selection = (' + key + ', ' + value + ')');
     }
 }
 
