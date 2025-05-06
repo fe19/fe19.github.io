@@ -405,7 +405,7 @@ for(const selectElement of selectTableElements) {
     const id = selectElement.id;
     selectElement.addEventListener('change', (select) => {
         const value = selectElement.value
-        console.log('TEST Store ' + value);
+        console.log('TEST Store Selection (' + id + ' ' + value + ')');
         store(id, value);
         computePersonsPaid();
     });
