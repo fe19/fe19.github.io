@@ -94,6 +94,13 @@ function loadTable() {
         const value = localStorage.getItem(key);
         input.value = value;
     }
+    const modifiableSelects = document.querySelectorAll('select.modifiable-table-element');
+    for (const select of modifiableSelects) {
+        const key = select.id;
+        const value = localStorage.getItem(key);
+        // select.value = value; TODO activate
+        console.log('TEST Loaded value = ' + value);
+    }
 }
 
 function computeTotal() {
@@ -395,7 +402,11 @@ for (const inputElement of inputTableElements) {
 }
 const selectTableElements = document.querySelectorAll('select.modifiable-table-element');
 for(const selectElement of selectTableElements) {
+    const id = inputElement.id;
     selectElement.addEventListener('change', (select) => {
+        const value = selectElement.value
+        console.log('TEST Store ' + value);
+        store(id, value);
         computePersonsPaid();
     });
 }
