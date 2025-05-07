@@ -23,7 +23,6 @@ function updateNames(idSuffix, value) {
     const idPayed = 'output-paid-' + idSuffix;
     const fieldPayed = document.getElementById(idPayed);
     fieldPayed.textContent = `${value} payed`;
-    console.log(`Update ${fieldPayed.idPays} = ${value}`);
 }
 
 function updateSelectNames(i) {
