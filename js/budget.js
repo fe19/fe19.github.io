@@ -126,7 +126,6 @@ function computePersonsPaid() {
     let totalPaid2 = 0.0;
     let i = 1;
     selectPays.forEach(selectPaid => {
-        // TODO Verify implementation
         if(selectPaid.options[selectPaid.selectedIndex] === undefined) return;
         const selectedPerson = selectPaid.options[selectPaid.selectedIndex].text;
         const amountElement = document.getElementById('amount' + i);
