@@ -83,7 +83,6 @@ function loadInitial() {
 }
 
 function getPersonName(i) {
-    console.log('Person =', document.getElementById(`input-person${i}-name`).value); // TODO remove comment
     return document.getElementById(`input-person${i}-name`).value;
 }
 
