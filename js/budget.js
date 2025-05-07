@@ -99,7 +99,6 @@ function loadTable() {
         const key = select.id;
         const value = localStorage.getItem(key);
         select.value = value;
-        console.log('TEST Loaded selection = (' + key + ', ' + value + ')');
     }
 }
 
