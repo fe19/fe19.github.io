@@ -183,10 +183,6 @@ function getOutputSuffix(id) {
     return id.substring(7); // output-person1-name -> person1-name
 }
 
-function validatePercentage(percentage1, percentage2) {
-    // TODO simplify functions
-}
-
 function validatePercentageElements(inputElementListener, inputElementOther) {
     const percentage1 = parseInt(inputElementListener.value);
     const percentage2 = parseInt(inputElementOther.value);
