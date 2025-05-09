@@ -63,7 +63,6 @@ function saveToFile(data, filename) {
     anchor.download = filename;
     anchor.click();
     URL.revokeObjectURL(anchor.href);
-    console.log(`Save to file ${filename} with content ${data}`);
 }
 
 function loadInitial() {
