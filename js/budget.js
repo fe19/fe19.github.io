@@ -328,7 +328,6 @@ function autoFill(id) {
     const percentagePerson1 = document.getElementById('input-person1-percentage');
     const percentagePerson2 = document.getElementById('input-person2-percentage');
     if (description.value === '') {
-        console.log('Description is empty');
         dateElement.value = '';
         percentagePerson1Element.value = '';
         percentagePerson2Element.value = '';
