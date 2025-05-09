@@ -188,7 +188,6 @@ function validatePercentageElements(inputElementListener, inputElementOther) {
     const percentage2 = parseInt(inputElementOther.value);
     const sum = percentage1 + percentage2;
         if(sum > 100) {
-            console.log('percentage > 100%');
             inputElementListener.style.setProperty('background', 'yellow', 'important');
             inputElementOther.style.setProperty('background', 'yellow', 'important');
             if(isNightModeActive) {
