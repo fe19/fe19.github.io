@@ -37,7 +37,6 @@ function updateInput(idSuffix, value) {
     const id = 'input-' + idSuffix;
     const element = document.getElementById(id);
     element.value = value;
-    console.log(`Update element ${id} = ${value}`);
 }
 
 function updateTableNames(idSuffix, name) {
