@@ -107,7 +107,6 @@ function computeTotal() {
         total += parseInt(amount);
     });
     outputTotal.textContent = `${currency}${total.toFixed(2)}`;
-    console.log('Compute total amount = ', total);
 }
 
 
