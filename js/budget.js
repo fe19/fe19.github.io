@@ -152,7 +152,6 @@ function computePersons() {
     });
     outputPerson1.textContent = `${currency}${total1.toFixed(2)}`;
     outputPerson2.textContent = `${currency}${total2.toFixed(2)}`;
-    console.log('Compute person1 amount = ' + total1 + ' person2 amount = ' + total2);
 }
 
 function activateNightMode() {
