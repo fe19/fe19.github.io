@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathGym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ════ Menu Screen ════ -->
+<div id="menu" class="screen active">
+  <h1>MathGym</h1>
+
+  <div class="menu-section">
+    <h2>Category</h2>
+    <div class="btn-group" id="category-btns">
+      <button data-val="addition" class="selected">+</button>
+      <button data-val="multiplication">×</button>
+      <button data-val="division">÷</button>
+      <button data-val="mixed">Mix</button>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <h2>Difficulty</h2>
+    <div class="btn-group" id="difficulty-btns">
+      <button data-val="easy" class="selected">Easy</button>
+      <button data-val="medium">Medium</button>
+      <button data-val="hard">Hard</button>
+      <button data-val="extra-hard">Extra</button>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startQuiz()">Start</button>
+  <button class="leaderboard-btn" onclick="showScreen('leaderboard')">Leaderboard</button>
+</div>
+
+<!-- ════ Quiz Screen ════ -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <span id="quiz-counter">1 / 10</span>
+    <span id="quiz-timer">0:00</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="question" id="question-text">3 + 5 = ?</div>
+  <div class="answers" id="answers"></div>
+</div>
+
+<!-- ════ Result Screen ════ -->
+<div id="result" class="screen">
+  <h1>Done!</h1>
+  <div class="score-circle">
+    <span class="score-num" id="final-score">0</span>
+    <span class="score-label">/ 10</span>
+  </div>
+  <div class="result-details" id="result-details"></div>
+  <button class="start-btn" onclick="startQuiz()">Play Again</button>
+  <button class="leaderboard-btn" onclick="showScreen('leaderboard')">Leaderboard</button>
+  <button class="back-btn" onclick="showScreen('menu')">Menu</button>
+</div>
+
+<!-- ════ Leaderboard Screen ════ -->
+<div id="leaderboard" class="screen">
+  <h1>Leaderboard</h1>
+  <div class="filter-row" id="lb-filters"></div>
+  <table class="leaderboard-table" id="lb-table">
+    <thead><tr><th>#</th><th>Score</th><th>Category</th><th>Diff.</th><th>Time</th><th>Date</th></tr></thead>
+    <tbody id="lb-body"></tbody>
+  </table>
+  <p class="empty-msg" id="lb-empty" style="display:none">No scores yet.</p>
+  <button class="back-btn" onclick="showScreen('menu')">Back</button>
+  <button class="clear-btn" onclick="clearLeaderboard()">Clear All</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
+
