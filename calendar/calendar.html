@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planer H+F</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Planer H+F</h1>
+    <div class="header-right">
+      <div class="view-toggle">
+        <button id="btn-calendar" class="active">Calendar</button>
+        <button id="btn-list">List</button>
+      </div>
+      <div class="data-actions">
+        <button id="btn-export" title="Export tasks">⬇</button>
+        <label id="btn-import-label" title="Import tasks">⬆<input type="file" id="btn-import" accept=".json" hidden></label>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="calendar-view">
+      <div class="calendar-nav">
+        <button id="btn-prev">&lsaquo;</button>
+        <span id="calendar-month-label"></span>
+        <button id="btn-next">&rsaquo;</button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+    </section>
+
+    <section id="list-view" class="hidden">
+      <div id="list-container"></div>
+    </section>
+  </main>
+
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h2 id="modal-title">Add Task</h2>
+      <form id="task-form">
+        <label>
+          Title
+          <input type="text" id="input-title" required>
+        </label>
+        <label>
+          Description
+          <textarea id="input-desc" rows="3"></textarea>
+        </label>
+        <label>
+          Date
+          <input type="date" id="input-date" required>
+        </label>
+        <label>
+          Recurrence
+          <select id="input-recurrence">
+            <option value="none">One-time</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </label>
+        <label>
+          Color
+          <div class="color-swatches" id="color-swatches">
+            <button type="button" class="color-swatch" data-color="#40504b" style="background:#40504b" aria-label="Dark Green"></button>
+            <button type="button" class="color-swatch" data-color="#707d5e" style="background:#707d5e" aria-label="Olive"></button>
+            <button type="button" class="color-swatch" data-color="#4e797a" style="background:#4e797a" aria-label="Teal"></button>
+            <button type="button" class="color-swatch" data-color="#9bc7c0" style="background:#9bc7c0" aria-label="Light Teal"></button>
+            <button type="button" class="color-swatch" data-color="#c6a142" style="background:#c6a142" aria-label="Gold"></button>
+            <button type="button" class="color-swatch" data-color="#9a5331" style="background:#9a5331" aria-label="Brown"></button>
+            <button type="button" class="color-swatch" data-color="#7d282e" style="background:#7d282e" aria-label="Dark Red"></button>
+          </div>
+          <input type="hidden" id="input-color" value="#4a90d9">
+        </label>
+        <div class="modal-actions">
+          <button type="submit" class="btn-save">Save</button>
+          <button type="button" id="btn-cancel" class="btn-cancel">Cancel</button>
+          <button type="button" id="btn-delete" class="btn-delete hidden">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="task-tooltip" class="task-tooltip hidden"></div>
+
+  <button id="btn-add" aria-label="Add task">+</button>
+</body>
+</html>
+
