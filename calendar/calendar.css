@@ -1,0 +1,585 @@
+:root {
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-primary: #4a90d9;
+  --color-primary-light: #e8f0fe;
+  --color-text: #1a1a1a;
+  --color-text-muted: #888;
+  --color-border: #e0e0e0;
+  --color-danger: #d9534f;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.data-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.data-actions button,
+.data-actions label {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.data-actions button:hover,
+.data-actions label:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0;
+}
+
+.view-toggle button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.view-toggle button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.view-toggle button:last-child {
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+.view-toggle button.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* Calendar Navigation */
+.calendar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.calendar-nav button {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+}
+
+.calendar-nav span {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Calendar Weekdays */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Calendar Grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-cell {
+  min-height: 3.5rem;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-left: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.calendar-cell:nth-child(7n) {
+  border-right: none;
+}
+
+.calendar-cell:nth-child(-n+7) {
+  border-top: none;
+}
+
+.calendar-cell.empty {
+  background: var(--color-bg);
+  cursor: default;
+}
+
+.calendar-cell .day-number {
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+}
+
+.calendar-cell.today .day-number {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.calendar-cell .task-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: inline-block;
+  margin: 1px;
+}
+
+.calendar-cell .task-title {
+  display: none;
+}
+
+.calendar-cell .task-dot.task-done {
+  opacity: 0.4;
+}
+
+.calendar-cell .task-title.task-done {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.calendar-cell .more-tasks {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.calendar-cell.holiday-cell {
+  background: #fff5f5;
+}
+
+.calendar-cell .holiday-label {
+  display: block;
+  font-size: 0.6rem;
+  color: #b94040;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 1px;
+}
+
+.holiday-entry {
+  font-size: 0.8rem;
+  color: #b94040;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-left: 3px solid #b94040;
+  background: #fff5f5;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+/* List View */
+#list-view {
+  padding: 0.5rem;
+}
+
+.list-date-group {
+  margin-bottom: 1rem;
+}
+
+.list-date-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.task-card {
+  background: var(--color-surface);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.35rem;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.task-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.task-card.completed .task-info-title {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.task-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.1rem;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-info-title {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.task-info-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.15rem;
+}
+
+.task-badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-top: 0.15rem;
+  display: inline-block;
+}
+
+.list-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 3rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--color-surface);
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 16px 16px 0 0;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.modal-content textarea,
+.modal-content select {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-top: 0.25rem;
+  background: var(--color-bg);
+}
+
+.modal-content textarea {
+  resize: vertical;
+}
+
+.color-swatches {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.color-swatch {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: transform 0.1s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch.selected {
+  border-color: var(--color-surface);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.4);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.btn-save {
+  flex: 1;
+  padding: 0.65rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 0.65rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-delete {
+  padding: 0.65rem 1rem;
+  background: var(--color-danger);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-delete.hidden {
+  display: none;
+}
+
+/* Tooltip */
+.task-tooltip {
+  position: absolute;
+  z-index: 200;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 0.6rem 0.75rem;
+  min-width: 160px;
+  max-width: 260px;
+  pointer-events: none;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding-left: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.tooltip-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tooltip-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.tooltip-done {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.tooltip-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+  word-break: break-word;
+}
+
+.tooltip-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* FAB */
+#btn-add {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  header {
+    padding: 1rem 2rem;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .calendar-cell {
+    min-height: 6rem;
+    padding: 0.4rem;
+  }
+
+  .calendar-cell .task-dot {
+    display: none;
+  }
+
+  .calendar-cell .task-title {
+    display: block;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    margin-bottom: 1px;
+  }
+
+  .modal {
+    align-items: center;
+  }
+
+  .modal-content {
+    max-width: 480px;
+    border-radius: 16px;
+  }
+
+  #list-view {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .calendar-nav span {
+    font-size: 1.1rem;
+  }
+}
+
