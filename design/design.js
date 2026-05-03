@@ -481,3 +481,13 @@ rebuild();
 animate();
 
 window.addEventListener('resize', resizeAll);
+
+const menuToggle = document.getElementById('menu-toggle');
+const backdrop = document.getElementById('menu-backdrop');
+function setMenu(open) {
+  document.body.classList.toggle('menu-open', open);
+  menuToggle.setAttribute('aria-expanded', String(open));
+  backdrop.hidden = !open;
+}
+menuToggle.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+backdrop.addEventListener('click', () => setMenu(false));
