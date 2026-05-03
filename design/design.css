@@ -1,0 +1,28 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { display: flex; background: #fafafa; color: #1a1a1a; overflow: hidden; }
+
+#controls { width: 290px; flex-shrink: 0; padding: 18px; overflow-y: auto; background: #fff; border-right: 1px solid #e2e2e2; }
+h1 { font-size: 14px; margin-bottom: 18px; font-weight: 600; }
+h2 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin: 18px 0 8px; font-weight: 600; }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-size: 12px; }
+.field > .lbl { color: #555; }
+input[type="number"], input[type="range"], select, input[type="color"] {
+  font: inherit; padding: 5px 8px; border: 1px solid #d4d4d4; border-radius: 4px; background: #fff; width: 100%; color: inherit;
+}
+input[type="color"] { padding: 2px; height: 28px; cursor: pointer; }
+input[type="range"] { padding: 0; height: 24px; }
+.row { display: flex; gap: 8px; }
+.row > .field { flex: 1; }
+button { width: 100%; padding: 7px 10px; margin-top: 6px; background: #1a1a1a; color: #fff; border: none; border-radius: 4px; cursor: pointer; font: inherit; font-size: 12px; }
+button:hover { background: #333; }
+button.secondary { background: #fff; color: #1a1a1a; border: 1px solid #d4d4d4; }
+button.secondary:hover { background: #f0f0f0; }
+
+#views { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1px; background: #e2e2e2; min-width: 0; }
+.vp { position: relative; background: #fff; overflow: hidden; }
+.vp canvas { display: block; width: 100%; height: 100%; }
+.vp .label {
+  position: absolute; top: 8px; left: 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: #444; pointer-events: none; background: rgba(255,255,255,0.85); padding: 3px 7px; border-radius: 2px; font-weight: 600;
+}
