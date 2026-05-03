@@ -7,7 +7,7 @@ const params = {
   shape: 'rectangle', width: 12, depth: 9,
   notchWidth: 5, notchDepth: 4,
   floors: 3, floorHeight: 3,
-  roof: 'flat', roofPitch: 1.8,
+  roof: 'flat', roofPitch: 3,
   windowCount: 10, windowWidth: 1.2, windowHeight: 1.4, doorPos: 0,
   style: 'clean', wallColor: '#e8dfcc', roofColor: '#5d4a3a',
 };
