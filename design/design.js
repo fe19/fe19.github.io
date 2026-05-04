@@ -9,7 +9,7 @@ const params = {
   floors: 3, floorHeight: 3,
   roof: 'flat', roofPitch: 3,
   windowCount: 10, windowWidth: 1.2, windowHeight: 1.4, doorPos: 0,
-  style: 'clean', wallColor: '#e8dfcc', roofColor: '#5d4a3a',
+  style: 'clean', wallColor: '#e8dfcc', roofColor: '#5d4a3a', glassColor: '#36506e',
 };
 
 function readInputs() {
@@ -154,9 +154,10 @@ function makeMaterials(p) {
   const roof = isClean
     ? new THREE.MeshLambertMaterial({ color: roofC })
     : new THREE.MeshStandardMaterial({ color: roofC, roughness: 0.7, metalness: 0 });
+  const glassC = new THREE.Color(p.glassColor);
   const win = isClean
-    ? new THREE.MeshBasicMaterial({ color: 0x36506e })
-    : new THREE.MeshStandardMaterial({ color: 0x1a2940, roughness: 0.12, metalness: 0.5 });
+    ? new THREE.MeshBasicMaterial({ color: glassC })
+    : new THREE.MeshStandardMaterial({ color: glassC, roughness: 0.12, metalness: 0.5 });
   return { wall, roof, win, door: win };
 }
 
