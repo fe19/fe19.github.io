@@ -157,10 +157,7 @@ function makeMaterials(p) {
   const win = isClean
     ? new THREE.MeshBasicMaterial({ color: 0x36506e })
     : new THREE.MeshStandardMaterial({ color: 0x1a2940, roughness: 0.12, metalness: 0.5 });
-  const door = isClean
-    ? new THREE.MeshBasicMaterial({ color: 0x6a4a30 })
-    : new THREE.MeshStandardMaterial({ color: 0x4a2f1a, roughness: 0.6 });
-  return { wall, roof, win, door };
+  return { wall, roof, win, door: win };
 }
 
 function buildBuilding(p, group) {
