@@ -7,6 +7,37 @@
     height: 280px;
 }
 
+.chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.y-range {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #355C7D;
+}
+
+.y-range label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+}
+
+.y-range input {
+    width: 5.5rem;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+}
+
 .source-filters .form-check-label {
     user-select: none;
 }

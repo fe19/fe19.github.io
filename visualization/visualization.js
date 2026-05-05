@@ -44,8 +44,18 @@
         return allRows.filter(r => sources.has(r.source));
     }
 
+    function readYRange(key) {
+        const min = parseFloat(document.querySelector(`input[data-chart="${key}"][data-bound="min"]`).value);
+        const max = parseFloat(document.querySelector(`input[data-chart="${key}"][data-bound="max"]`).value);
+        return {
+            min: Number.isFinite(min) ? min : undefined,
+            max: Number.isFinite(max) ? max : undefined,
+        };
+    }
+
     function buildChart(series, points) {
         const ctx = document.getElementById(series.canvasId).getContext('2d');
+        const yRange = readYRange(series.key);
         return new Chart(ctx, {
             type: 'line',
             data: {
@@ -84,7 +94,7 @@
                 },
                 scales: {
                     x: { type: 'time', time: { tooltipFormat: 'yyyy-MM-dd HH:mm:ss' }, ticks: { maxRotation: 0, autoSkip: true } },
-                    y: { beginAtZero: true },
+                    y: { min: yRange.min, max: yRange.max },
                 },
             },
         });
@@ -220,6 +230,18 @@
 
     for (const cb of document.querySelectorAll('.source-filters input')) {
         cb.addEventListener('change', renderCharts);
+    }
+
+    for (const input of document.querySelectorAll('.y-range input')) {
+        input.addEventListener('input', () => {
+            const key = input.dataset.chart;
+            const chart = charts[key];
+            if (!chart) return;
+            const { min, max } = readYRange(key);
+            chart.options.scales.y.min = min;
+            chart.options.scales.y.max = max;
+            chart.update('none');
+        });
     }
 
     loadDefault();

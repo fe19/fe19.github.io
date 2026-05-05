@@ -50,9 +50,36 @@
             </div>
         </div>
 
-        <div class="card mb-3"><div class="card-body"><h5 class="card-title">EF (V/m)</h5><div class="chart-wrap"><canvas id="chart-ef"></canvas></div></div></div>
-        <div class="card mb-3"><div class="card-body"><h5 class="card-title">EMF (mG)</h5><div class="chart-wrap"><canvas id="chart-emf"></canvas></div></div></div>
-        <div class="card mb-4"><div class="card-body"><h5 class="card-title">RF Power Density (mW/m²)</h5><div class="chart-wrap"><canvas id="chart-rf"></canvas></div></div></div>
+        <div class="card mb-3"><div class="card-body">
+            <div class="chart-header">
+                <h5 class="card-title mb-0">EF (V/m)</h5>
+                <div class="y-range">
+                    <label>Min <input type="number" data-chart="ef" data-bound="min" value="0" step="0.1"></label>
+                    <label>Max <input type="number" data-chart="ef" data-bound="max" value="5" step="0.1"></label>
+                </div>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-ef"></canvas></div>
+        </div></div>
+        <div class="card mb-3"><div class="card-body">
+            <div class="chart-header">
+                <h5 class="card-title mb-0">EMF (mG)</h5>
+                <div class="y-range">
+                    <label>Min <input type="number" data-chart="emf" data-bound="min" value="0" step="0.1"></label>
+                    <label>Max <input type="number" data-chart="emf" data-bound="max" value="2" step="0.1"></label>
+                </div>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-emf"></canvas></div>
+        </div></div>
+        <div class="card mb-4"><div class="card-body">
+            <div class="chart-header">
+                <h5 class="card-title mb-0">RF Power Density (mW/m²)</h5>
+                <div class="y-range">
+                    <label>Min <input type="number" data-chart="rf" data-bound="min" value="0" step="1"></label>
+                    <label>Max <input type="number" data-chart="rf" data-bound="max" value="50" step="1"></label>
+                </div>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-rf"></canvas></div>
+        </div></div>
 
         <div class="card">
             <div class="card-body">
