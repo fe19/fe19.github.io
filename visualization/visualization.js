@@ -93,7 +93,20 @@
                     tooltip: { mode: 'nearest', intersect: false },
                 },
                 scales: {
-                    x: { type: 'time', time: { tooltipFormat: 'yyyy-MM-dd HH:mm:ss' }, ticks: { maxRotation: 0, autoSkip: true } },
+                    x: {
+                        type: 'time',
+                        time: {
+                            tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
+                            displayFormats: {
+                                millisecond: 'HH:mm:ss.SSS',
+                                second: 'HH:mm:ss',
+                                minute: 'HH:mm',
+                                hour: 'HH:mm',
+                                day: 'MMM d',
+                            },
+                        },
+                        ticks: { maxRotation: 0, autoSkip: true },
+                    },
                     y: { min: yRange.min, max: yRange.max },
                 },
             },
