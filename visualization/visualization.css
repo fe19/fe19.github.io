@@ -1,0 +1,21 @@
+.toolbar .btn + .btn {
+    margin-left: 0.5rem;
+}
+
+.chart-wrap {
+    position: relative;
+    height: 280px;
+}
+
+.source-filters .form-check-label {
+    user-select: none;
+}
+
+@media (max-width: 767.98px) {
+    .chart-wrap {
+        height: 220px;
+    }
+    .toolbar .btn {
+        margin-bottom: 0.25rem;
+    }
+}
