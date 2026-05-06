@@ -220,12 +220,19 @@
             el.textContent = 'No rows match current filters.';
             return;
         }
+        const pad = n => String(n).padStart(2, '0');
+        const fmtDate = ms => {
+            const d = new Date(ms);
+            return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        };
+        const startDate = fmtDate(rows[0].t);
+        const endDate = fmtDate(rows[rows.length - 1].t);
+        const dateLabel = startDate === endDate ? startDate : `${startDate} → ${endDate}`;
         const span = (rows[rows.length - 1].t - rows[0].t) / 1000;
         const h = Math.floor(span / 3600);
         const m = Math.floor((span % 3600) / 60);
         const s = Math.floor(span % 60);
-        const pad = n => String(n).padStart(2, '0');
-        el.textContent = `${rows.length.toLocaleString()} rows • ${pad(h)}:${pad(m)}:${pad(s)} span`;
+        el.textContent = `${dateLabel} • ${rows.length.toLocaleString()} rows • ${pad(h)}:${pad(m)}:${pad(s)} span`;
     }
 
     function loadText(text) {
