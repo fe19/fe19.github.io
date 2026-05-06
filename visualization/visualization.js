@@ -1,8 +1,8 @@
 (() => {
     const SERIES = [
         { key: 'ef', label: 'EF (V/m)', color: '#9a5331', canvasId: 'chart-ef' },
-        { key: 'emf', label: 'EMF (mG)', color: '#0dcaf0', canvasId: 'chart-emf' },
         { key: 'rf', label: 'RF Power Density (mW/m²)', color: '#355C7D', canvasId: 'chart-rf' },
+        { key: 'emf', label: 'EMF (mG)', color: '#0dcaf0', canvasId: 'chart-emf' },
     ];
 
     const charts = {};
