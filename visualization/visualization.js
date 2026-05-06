@@ -125,16 +125,34 @@
         syncing = false;
     }
 
-    function pointsFor(rows, key) {
-        const out = new Array(rows.length);
-        for (let i = 0; i < rows.length; i++) out[i] = { x: rows[i].t, y: rows[i][key] };
+    function readSmooth(key) {
+        const v = parseInt(document.querySelector(`input[data-chart="${key}"][data-bound="smooth"]`).value, 10);
+        return Number.isFinite(v) && v >= 1 ? v : 1;
+    }
+
+    function pointsFor(rows, key, window) {
+        const n = rows.length;
+        const out = new Array(n);
+        if (!window || window <= 1) {
+            for (let i = 0; i < n; i++) out[i] = { x: rows[i].t, y: rows[i][key] };
+            return out;
+        }
+        const half = Math.floor(window / 2);
+        let sum = 0, lo = 0, hi = -1;
+        for (let i = 0; i < n; i++) {
+            const targetHi = Math.min(n - 1, i + half);
+            const targetLo = Math.max(0, i - half);
+            while (hi < targetHi) { hi++; sum += rows[hi][key]; }
+            while (lo < targetLo) { sum -= rows[lo][key]; lo++; }
+            out[i] = { x: rows[i].t, y: sum / (hi - lo + 1) };
+        }
         return out;
     }
 
     function renderCharts() {
         const rows = visibleRows();
         for (const s of SERIES) {
-            const data = pointsFor(rows, s.key);
+            const data = pointsFor(rows, s.key, readSmooth(s.key));
             if (charts[s.key]) {
                 charts[s.key].data.datasets[0].data = data;
                 charts[s.key].resetZoom('none');
@@ -250,9 +268,13 @@
             const key = input.dataset.chart;
             const chart = charts[key];
             if (!chart) return;
-            const { min, max } = readYRange(key);
-            chart.options.scales.y.min = min;
-            chart.options.scales.y.max = max;
+            if (input.dataset.bound === 'smooth') {
+                chart.data.datasets[0].data = pointsFor(visibleRows(), key, readSmooth(key));
+            } else {
+                const { min, max } = readYRange(key);
+                chart.options.scales.y.min = min;
+                chart.options.scales.y.max = max;
+            }
             chart.update('none');
         });
     }
