@@ -240,30 +240,12 @@
         renderCharts();
     }
 
-    async function loadDefault() {
-        try {
-            const res = await fetch('measurements.csv');
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const text = await res.text();
-            loadText(text);
-        } catch (err) {
-            document.getElementById('status').textContent =
-                'Could not load measurements.csv (use a local server, or pick a CSV file).';
-            console.error(err);
-        }
-    }
-
     document.getElementById('file-input').addEventListener('change', e => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = () => loadText(String(reader.result));
         reader.readAsText(file);
-    });
-
-    document.getElementById('reset-btn').addEventListener('click', () => {
-        document.getElementById('file-input').value = '';
-        loadDefault();
     });
 
     for (const cb of document.querySelectorAll('.source-filters input')) {
@@ -285,6 +267,4 @@
             chart.update('none');
         });
     }
-
-    loadDefault();
 })();
