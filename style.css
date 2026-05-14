@@ -68,6 +68,8 @@ h5 {
     color: #355C7D;
     font-weight: 500;
     border-radius: 0.5rem;
+    background-color: #dee2e6;
+    padding: 0.4rem 0.85rem;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
