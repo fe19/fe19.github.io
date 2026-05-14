@@ -54,9 +54,9 @@ h5 {
 }
 
 .tab-nav {
-    background-color: #ffffff;
+    background-color: #e9ecef;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid #dee2e6;
 }
 
 .tab-nav .navbar-brand {
