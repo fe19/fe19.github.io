@@ -75,6 +75,7 @@ h5 {
     background-color: rgba(13, 202, 240, 0.12);
     color: #0dcaf0;
     transform: translateY(-1px);
+    text-decoration: none;
 }
 
 .tab-nav .nav-link.active {
