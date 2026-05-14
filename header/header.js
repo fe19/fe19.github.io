@@ -3,6 +3,11 @@
     const scriptUrl = new URL(script.src, document.baseURI);
     const base = new URL('..', scriptUrl).href;
 
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = new URL('header.css', scriptUrl).href;
+    document.head.appendChild(link);
+
     fetch(new URL('header.html', scriptUrl).href)
         .then(r => r.text())
         .then(html => {
