@@ -3,9 +3,9 @@
 }
 
 .tab-nav {
-    background-color: #e9ecef;
+    background-color: #f1f3f5;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .tab-nav .navbar-brand {
