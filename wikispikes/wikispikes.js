@@ -7,7 +7,7 @@
     const AGENT = 'user';
 
     const CANDIDATES = 50;    // top-viewed articles analyzed when no category is chosen
-    const CATEGORY_POOL = 250;// candidates classified to dig out a chosen category
+    const CATEGORY_POOL = 400;// top-viewed candidates classified to dig out a chosen category
     const SERIES_LIMIT = 60;  // max articles we fetch 30-day history for
     const WINDOW_DAYS = 30;   // history window, including the selected day
     const TOP_RESULTS = 20;   // spikes shown per selection (day / category / country)
@@ -84,6 +84,49 @@
         Q4830453: 'Companies', Q6881511: 'Companies', Q783794: 'Companies', Q891723: 'Companies',
         Q167037: 'Companies', Q18388277: 'Companies', Q129238: 'Companies', Q219577: 'Companies',
         Q161380: 'Companies', Q431289: 'Companies', Q2085381: 'Companies',
+    };
+
+    // Notable articles per category, used to top a category up to TOP_RESULTS when the day's
+    // top-viewed list is thin (e.g. AI). Titles are English Wikipedia article names.
+    const CATEGORY_SEEDS = {
+        AI: [
+            'ChatGPT', 'GPT-4', 'GPT-4o', 'GPT-5', 'Grok (chatbot)', 'Gemini (chatbot)',
+            'Claude (language model)', 'Llama (language model)', 'DeepSeek', 'Mistral AI',
+            'Midjourney', 'Stable Diffusion', 'DALL-E', 'Sora (text-to-video model)',
+            'Apple Intelligence', 'Adobe Firefly', 'AlphaFold', 'Scale AI', 'OpenAI', 'Anthropic',
+            'Google DeepMind', 'Hugging Face', 'Perplexity AI', 'Character.ai', 'Runway (company)',
+            'Large language model', 'Generative artificial intelligence', 'Artificial intelligence',
+            'Machine learning', 'Deep learning', 'Neural network', 'Artificial general intelligence',
+            'Transformer (deep learning architecture)', 'Microsoft Copilot', 'Nvidia',
+        ],
+        Companies: [
+            'Apple Inc.', 'Google', 'Microsoft', 'Amazon (company)', 'Meta Platforms', 'Tesla, Inc.',
+            'Nvidia', 'Netflix', 'The Walt Disney Company', 'Samsung', 'Toyota', "McDonald's",
+            'The Coca-Cola Company', 'Nike, Inc.', 'Intel', 'Boeing', 'Ford Motor Company', 'Walmart',
+            'Sony', 'Berkshire Hathaway', 'JPMorgan Chase', 'Goldman Sachs', 'ExxonMobil', 'Starbucks',
+            'PayPal', 'Uber', 'Spotify', 'TikTok', 'Alibaba Group', 'Tencent',
+        ],
+        Technology: [
+            'JavaScript', 'Python (programming language)', 'Java (programming language)', 'C++',
+            'C (programming language)', 'Linux', 'Android (operating system)', 'IOS', 'Windows 11',
+            'WhatsApp', 'Telegram (software)', 'Signal (software)', 'Bitcoin', 'Ethereum',
+            'Google Chrome', 'Firefox', 'Visual Studio Code', 'React (software)', 'Docker (software)',
+            'Kubernetes', 'GitHub', 'WordPress', 'SQL', 'HTML', 'CSS', 'TypeScript',
+            'Rust (programming language)', 'Node.js', 'Blockchain', 'Quantum computing',
+        ],
+        Science: [
+            'Gold', 'Iron', 'Oxygen', 'Hydrogen', 'Carbon', 'Helium', 'Uranium', 'DNA', 'Black hole',
+            'Milky Way', 'Sun', 'Moon', 'Mars', 'Jupiter', 'Saturn', 'Photosynthesis', 'Evolution',
+            'Gravity', 'Quantum mechanics', 'Theory of relativity', 'Periodic table', 'CRISPR',
+            'Higgs boson', 'Neutron star', 'Supernova', 'Big Bang', 'Climate change', 'Cancer',
+            'Influenza', 'Tuberculosis',
+        ],
+        Places: [
+            'United States', 'India', 'China', 'Russia', 'France', 'Germany', 'Japan',
+            'United Kingdom', 'Canada', 'Brazil', 'Italy', 'Spain', 'Australia', 'Mexico',
+            'New York City', 'London', 'Paris', 'Tokyo', 'Los Angeles', 'Dubai', 'Rome', 'Berlin',
+            'Moscow', 'Istanbul', 'Singapore', 'Hong Kong',
+        ],
     };
 
     const dom = {
@@ -272,6 +315,17 @@
             .map(toCandidate);
     }
 
+    // Notable English-Wikipedia articles for a category, as {article, displayTitle, project, category}.
+    function categoryFill(category) {
+        const seeds = CATEGORY_SEEDS[category] || [];
+        return seeds.map((name) => ({
+            article: name.replace(/ /g, '_'),
+            displayTitle: name,
+            project: PROJECT,
+            category,
+        }));
+    }
+
     async function getSeries(title, endDate, project) {
         const start = addDays(endDate, -(WINDOW_DAYS - 1));
         const url = PAGEVIEWS_API + '/per-article/' + project + '/' + ACCESS + '/' + AGENT + '/'
@@ -348,36 +402,40 @@
         if (!items.length) return;
         setStatus('Classifying articles…');
 
-        const bySite = new Map();      // Wikidata site id → candidates on that wiki
+        // Build one job per (site, 50-title batch); a title's Wikidata site depends on its project.
+        const jobs = [];
+        const bySite = new Map();
         items.forEach((item) => {
             const site = wikiSite(item.project);
             if (!site) return;
             if (!bySite.has(site)) bySite.set(site, []);
             bySite.get(site).push(item);
         });
-
         for (const [site, siteItems] of bySite) {
             for (let i = 0; i < siteItems.length; i += WD_BATCH) {
-                const batch = siteItems.slice(i, i + WD_BATCH);
-                const entities = await wikidataEntities(
-                    'props=claims|sitelinks&sitefilter=' + site + '&sites=' + site
-                    + '&titles=' + batch.map((item) => encodeURIComponent(item.displayTitle)).join('|')
-                );
-                if (runId !== state.runId) return;
-
-                const byTitle = new Map();
-                for (const id in entities) {
-                    const entity = entities[id];
-                    if (!entity || entity.missing !== undefined) continue;
-                    const link = entity.sitelinks && entity.sitelinks[site];
-                    if (!link) continue;
-                    byTitle.set(link.title, classify(claimIds(entity, 'P31')));
-                }
-                for (const item of batch) {
-                    if (byTitle.has(item.displayTitle)) item.category = byTitle.get(item.displayTitle);
-                }
+                jobs.push({ site, batch: siteItems.slice(i, i + WD_BATCH) });
             }
         }
+
+        await pool(jobs, POOL_SIZE, async ({ site, batch }) => {
+            const entities = await wikidataEntities(
+                'props=claims|sitelinks&sitefilter=' + site + '&sites=' + site
+                + '&titles=' + batch.map((item) => encodeURIComponent(item.displayTitle)).join('|')
+            );
+            if (runId !== state.runId) return;
+
+            const byTitle = new Map();
+            for (const id in entities) {
+                const entity = entities[id];
+                if (!entity || entity.missing !== undefined) continue;
+                const link = entity.sitelinks && entity.sitelinks[site];
+                if (!link) continue;
+                byTitle.set(link.title, classify(claimIds(entity, 'P31')));
+            }
+            for (const item of batch) {
+                if (byTitle.has(item.displayTitle)) item.category = byTitle.get(item.displayTitle);
+            }
+        });
     }
 
     async function analyze(date) {
@@ -405,8 +463,15 @@
             await classifyCandidates(candidates, runId);
             if (runId !== state.runId) return;
 
-            const selected = (category ? candidates.filter((c) => c.category === category) : candidates)
-                .slice(0, SERIES_LIMIT);
+            let matched = category ? candidates.filter((c) => c.category === category) : candidates;
+            // Top a thin category up from its seed list (global view only) so it can reach 20 results.
+            if (category && !country && matched.length < TOP_RESULTS) {
+                const seen = new Set(matched.map((c) => c.displayTitle));
+                for (const item of categoryFill(category)) {
+                    if (!seen.has(item.displayTitle)) { matched.push(item); seen.add(item.displayTitle); }
+                }
+            }
+            const selected = matched.slice(0, SERIES_LIMIT);
 
             let done = 0;
             const rows = await pool(selected, POOL_SIZE, async (entry) => {
