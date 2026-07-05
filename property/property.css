@@ -1,40 +1,62 @@
-/* ── Swiss Property Search — tool-specific styles ──
-   Layout is handled by Bootstrap; this only adds a few touches. */
+.stat-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+}
 
-#search-form .form-label {
-    font-weight: 600;
-    font-size: 0.85rem;
+.stat-tile .tile-label {
     color: var(--color-muted);
+    font-size: 0.85rem;
     margin-bottom: 0.25rem;
 }
 
-/* Result cards */
-.property-card {
-    height: 100%;
-    transition: box-shadow 0.15s, transform 0.15s;
-}
-.property-card:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
-    transform: translateY(-2px);
-}
-
-.property-card .price {
-    font-size: 1.25rem;
+.stat-tile .tile-value {
+    font-size: 1.75rem;
     font-weight: 700;
-    color: var(--color-secondary);
+    line-height: 1.2;
 }
 
-.property-card .location {
-    font-size: 0.9rem;
+.stat-tile .tile-unit {
     color: var(--color-muted);
+    font-size: 0.8rem;
 }
 
-.property-card .specs {
-    font-size: 0.85rem;
-    color: var(--color-muted);
+.chart-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
 }
 
-.property-card .badge-type {
-    background-color: #0dcaf0;
-    color: #fff;
+.chart-card h5 {
+    color: var(--color-text);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.chart-wrap {
+    position: relative;
+}
+
+.type-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    vertical-align: baseline;
+}
+
+#results-table td,
+#results-table th {
+    white-space: nowrap;
+}
+
+#results-table .text-end {
+    font-variant-numeric: tabular-nums;
+}
+
+#source-badge {
+    font-size: 0.8rem;
 }

@@ -1,215 +1,391 @@
-/* ════════════════════════════════════════════════════════════════════
-   Swiss Property Search
-   - Static, client-side tool. Data comes from getProperties() below,
-     which is the single seam to later swap in a real API / proxy.
-   ════════════════════════════════════════════════════════════════════ */
+(function () {
+    'use strict';
 
-/* ── Swiss cantons (code → name) ── */
-const CANTONS = {
-  AG: 'Aargau', AI: 'Appenzell Innerrhoden', AR: 'Appenzell Ausserrhoden',
-  BE: 'Bern', BL: 'Basel-Landschaft', BS: 'Basel-Stadt', FR: 'Fribourg',
-  GE: 'Geneva', GL: 'Glarus', GR: 'Graubünden', JU: 'Jura', LU: 'Lucerne',
-  NE: 'Neuchâtel', NW: 'Nidwalden', OW: 'Obwalden', SG: 'St. Gallen',
-  SH: 'Schaffhausen', SO: 'Solothurn', SZ: 'Schwyz', TG: 'Thurgau',
-  TI: 'Ticino', UR: 'Uri', VD: 'Vaud', VS: 'Valais', ZG: 'Zug', ZH: 'Zürich',
-};
+    const TYPE_LABELS = { apartment: 'Apartment', house: 'House' };
+    const SERIES_COLORS = { apartment: '#2a78d6', house: '#1baf7a' };
+    const CSV_HEADER = ['canton_code', 'canton', 'city', 'property_type',
+        'price_chf_per_m2', 'listings', 'median_price_chf', 'yoy_change_pct'];
 
-/* ── Sample dataset of Swiss properties for sale ──
-   Realistic but illustrative. Prices in CHF. */
-const PROPERTIES = [
-  { id: 'zh-001', title: 'Modern 3.5-room apartment near the lake', type: 'Apartment', canton: 'ZH', city: 'Zürich', price: 1290000, rooms: 3.5, livingSpace: 92, yearBuilt: 2018, description: 'Bright corner flat with balcony, 5 min from Zürichsee.' },
-  { id: 'zh-002', title: 'Family house with garden in Küsnacht', type: 'House', canton: 'ZH', city: 'Küsnacht', price: 3450000, rooms: 6.5, livingSpace: 210, yearBuilt: 2005, description: 'Detached house, large garden, lake view, double garage.' },
-  { id: 'zh-003', title: 'Compact studio in Zürich Kreis 4', type: 'Apartment', canton: 'ZH', city: 'Zürich', price: 620000, rooms: 1.5, livingSpace: 38, yearBuilt: 1999, description: 'Centrally located, ideal first home or pied-à-terre.' },
-  { id: 'zh-004', title: 'Penthouse with rooftop terrace', type: 'Penthouse', canton: 'ZH', city: 'Winterthur', price: 1850000, rooms: 4.5, livingSpace: 138, yearBuilt: 2021, description: 'Top-floor unit with 40 m² terrace and panoramic views.' },
-  { id: 'be-001', title: '4.5-room apartment in Bern Länggasse', type: 'Apartment', canton: 'BE', city: 'Bern', price: 980000, rooms: 4.5, livingSpace: 115, yearBuilt: 2010, description: 'Quiet residential area, close to university and old town.' },
-  { id: 'be-002', title: 'Chalet near Gstaad', type: 'House', canton: 'BE', city: 'Saanen', price: 2980000, rooms: 5.5, livingSpace: 180, yearBuilt: 1998, description: 'Traditional alpine chalet, ski-in access, fireplace.' },
-  { id: 'be-003', title: 'Renovated farmhouse in the Emmental', type: 'House', canton: 'BE', city: 'Langnau', price: 845000, rooms: 6.5, livingSpace: 240, yearBuilt: 1962, description: 'Spacious country home with barn, fully renovated 2019.' },
-  { id: 'ge-001', title: 'Elegant apartment in Geneva Eaux-Vives', type: 'Apartment', canton: 'GE', city: 'Geneva', price: 1650000, rooms: 4, livingSpace: 105, yearBuilt: 2012, description: 'High ceilings, near lake and city centre.' },
-  { id: 'ge-002', title: 'Lakeside villa in Cologny', type: 'House', canton: 'GE', city: 'Cologny', price: 6900000, rooms: 8, livingSpace: 360, yearBuilt: 2008, description: 'Prestigious villa with pool and direct lake frontage.' },
-  { id: 'ge-003', title: 'Studio near international organisations', type: 'Apartment', canton: 'GE', city: 'Geneva', price: 540000, rooms: 1, livingSpace: 32, yearBuilt: 1985, description: 'Compact, well-connected, ideal investment.' },
-  { id: 'vd-001', title: '3.5-room flat with Léman view', type: 'Apartment', canton: 'VD', city: 'Lausanne', price: 1120000, rooms: 3.5, livingSpace: 88, yearBuilt: 2016, description: 'Modern building, balcony facing the lake and Alps.' },
-  { id: 'vd-002', title: 'Vineyard house in Lavaux', type: 'House', canton: 'VD', city: 'Cully', price: 2350000, rooms: 5.5, livingSpace: 195, yearBuilt: 1978, description: 'Character home amid UNESCO vineyards, terraced garden.' },
-  { id: 'vd-003', title: 'New-build apartment in Montreux', type: 'Apartment', canton: 'VD', city: 'Montreux', price: 1390000, rooms: 4.5, livingSpace: 124, yearBuilt: 2023, description: 'Brand new, minergie standard, parking included.' },
-  { id: 'vs-001', title: 'Ski apartment in Verbier', type: 'Apartment', canton: 'VS', city: 'Verbier', price: 1750000, rooms: 3.5, livingSpace: 78, yearBuilt: 2014, description: 'Cosy chalet-style flat, walking distance to lifts.' },
-  { id: 'vs-002', title: 'Detached house in Sion', type: 'House', canton: 'VS', city: 'Sion', price: 720000, rooms: 5.5, livingSpace: 165, yearBuilt: 1989, description: 'Sunny plot, mountain views, garage and cellar.' },
-  { id: 'vs-003', title: 'Building plot near Crans-Montana', type: 'Plot', canton: 'VS', city: 'Lens', price: 480000, rooms: 0, livingSpace: 0, yearBuilt: 0, description: 'Serviced building land of 820 m², south-facing.' },
-  { id: 'ti-001', title: 'Apartment with lake view in Lugano', type: 'Apartment', canton: 'TI', city: 'Lugano', price: 1280000, rooms: 4.5, livingSpace: 130, yearBuilt: 2017, description: 'Spacious terrace, communal pool, view over Lake Lugano.' },
-  { id: 'ti-002', title: 'Rustico in the Verzasca valley', type: 'House', canton: 'TI', city: 'Sonogno', price: 395000, rooms: 3, livingSpace: 85, yearBuilt: 1920, description: 'Stone-built rustico, renovated, idyllic mountain setting.' },
-  { id: 'ti-003', title: 'Penthouse in Locarno', type: 'Penthouse', canton: 'TI', city: 'Locarno', price: 1950000, rooms: 5.5, livingSpace: 175, yearBuilt: 2020, description: 'Two-level penthouse, large terrace, lake panorama.' },
-  { id: 'zg-001', title: 'Luxury apartment in Zug', type: 'Apartment', canton: 'ZG', city: 'Zug', price: 2150000, rooms: 4.5, livingSpace: 142, yearBuilt: 2019, description: 'High-end finishes, lake and mountain views, low taxes.' },
-  { id: 'zg-002', title: 'Townhouse in Baar', type: 'House', canton: 'ZG', city: 'Baar', price: 1980000, rooms: 5.5, livingSpace: 188, yearBuilt: 2011, description: 'Modern terraced house, garden, near train station.' },
-  { id: 'lu-001', title: '3.5-room apartment in Lucerne', type: 'Apartment', canton: 'LU', city: 'Lucerne', price: 890000, rooms: 3.5, livingSpace: 86, yearBuilt: 2008, description: 'Walk to old town and lake, balcony, garage space.' },
-  { id: 'lu-002', title: 'House with Pilatus view', type: 'House', canton: 'LU', city: 'Kriens', price: 1450000, rooms: 6.5, livingSpace: 205, yearBuilt: 2002, description: 'Family home, large garden, views to Mt. Pilatus.' },
-  { id: 'bs-001', title: 'City apartment in Basel', type: 'Apartment', canton: 'BS', city: 'Basel', price: 760000, rooms: 3.5, livingSpace: 84, yearBuilt: 1996, description: 'Near Rhine and city centre, well maintained building.' },
-  { id: 'bs-002', title: 'Attic flat in Kleinbasel', type: 'Penthouse', canton: 'BS', city: 'Basel', price: 1050000, rooms: 4, livingSpace: 110, yearBuilt: 2015, description: 'Bright attic conversion with skylights and terrace.' },
-  { id: 'bl-001', title: 'Family house in Binningen', type: 'House', canton: 'BL', city: 'Binningen', price: 1320000, rooms: 5.5, livingSpace: 170, yearBuilt: 1985, description: 'Quiet street, mature garden, tram to Basel nearby.' },
-  { id: 'sg-001', title: '4.5-room apartment in St. Gallen', type: 'Apartment', canton: 'SG', city: 'St. Gallen', price: 680000, rooms: 4.5, livingSpace: 108, yearBuilt: 2007, description: 'Spacious flat near the city, parking included.' },
-  { id: 'gr-001', title: 'Holiday apartment in Davos', type: 'Apartment', canton: 'GR', city: 'Davos', price: 980000, rooms: 3.5, livingSpace: 72, yearBuilt: 2013, description: 'Ski and hike from the door, south-facing balcony.' },
-  { id: 'gr-002', title: 'Engadine house in Pontresina', type: 'House', canton: 'GR', city: 'Pontresina', price: 2750000, rooms: 6.5, livingSpace: 220, yearBuilt: 2000, description: 'Classic Engadine architecture, wellness area, garage.' },
-  { id: 'ag-001', title: 'Modern house in Aarau', type: 'House', canton: 'AG', city: 'Aarau', price: 1180000, rooms: 5.5, livingSpace: 178, yearBuilt: 2016, description: 'Energy-efficient new build, garden, two parking spots.' },
-  { id: 'ag-002', title: '3.5-room apartment in Baden', type: 'Apartment', canton: 'AG', city: 'Baden', price: 740000, rooms: 3.5, livingSpace: 90, yearBuilt: 2009, description: 'Central location, balcony, close to thermal baths.' },
-  { id: 'fr-001', title: 'House in Fribourg old town', type: 'House', canton: 'FR', city: 'Fribourg', price: 990000, rooms: 5.5, livingSpace: 185, yearBuilt: 1955, description: 'Characterful townhouse, renovated, courtyard garden.' },
-  { id: 'sz-001', title: 'Lake-view apartment in Schwyz', type: 'Apartment', canton: 'SZ', city: 'Brunnen', price: 1240000, rooms: 4.5, livingSpace: 128, yearBuilt: 2018, description: 'Overlooking Lake Lucerne, large terrace, low taxes.' },
-  { id: 'tg-001', title: 'Family house in Frauenfeld', type: 'House', canton: 'TG', city: 'Frauenfeld', price: 870000, rooms: 5.5, livingSpace: 162, yearBuilt: 1992, description: 'Quiet neighbourhood, garden, near schools.' },
-  { id: 'ne-001', title: 'Apartment with lake view in Neuchâtel', type: 'Apartment', canton: 'NE', city: 'Neuchâtel', price: 690000, rooms: 4.5, livingSpace: 118, yearBuilt: 2004, description: 'Views over Lake Neuchâtel, balcony, cellar and parking.' },
-  { id: 'so-001', title: 'Multi-family investment in Olten', type: 'Multi-family', canton: 'SO', city: 'Olten', price: 2480000, rooms: 0, livingSpace: 520, yearBuilt: 1975, description: '6-unit apartment building, fully let, good yield.' },
-];
+    const fmtInt = new Intl.NumberFormat('de-CH', { maximumFractionDigits: 0 });
+    const fmtPct = new Intl.NumberFormat('de-CH', { maximumFractionDigits: 1, signDisplay: 'always' });
 
-/* ── Data seam: the only place that produces the dataset ──
-   Returns a Promise so a real async source can replace it later. */
-function getProperties() {
-  return Promise.resolve(PROPERTIES);
-}
+    // --- dataset handling ------------------------------------------------
 
-/* ── Formatting helpers ── */
-const chf = new Intl.NumberFormat('de-CH', {
-  style: 'currency', currency: 'CHF', maximumFractionDigits: 0,
-});
+    // indexation factors from the daily BFS IMPI refresh (property/data-live.js)
+    function liveFactors() {
+        const live = typeof SWISS_PROPERTY_LIVE !== 'undefined' ? SWISS_PROPERTY_LIVE : null;
+        if (!live || !live.factors) return null;
+        const sane = t => typeof live.factors[t] === 'number' && live.factors[t] > 0.7 && live.factors[t] < 1.5;
+        if (!sane('apartment') || !sane('house')) return null;
+        if (live.factors.apartment === 1 && live.factors.house === 1) return null;
+        return live;
+    }
 
-function cantonName(code) {
-  return CANTONS[code] || code;
-}
+    function expandBundled() {
+        const records = [];
+        SWISS_PROPERTY_DATA.rows.forEach(r => {
+            const [code, canton, city, aM2, aN, aMed, aYoy, hM2, hN, hMed, hYoy] = r;
+            records.push({ cantonCode: code, canton, city, type: 'apartment', priceM2: aM2, listings: aN, medianPrice: aMed, yoy: aYoy });
+            records.push({ cantonCode: code, canton, city, type: 'house', priceM2: hM2, listings: hN, medianPrice: hMed, yoy: hYoy });
+        });
+        const meta = Object.assign({}, SWISS_PROPERTY_DATA.meta);
+        const live = liveFactors();
+        if (live) {
+            records.forEach(r => {
+                const f = live.factors[r.type];
+                if (r.priceM2 != null) r.priceM2 = Math.round(r.priceM2 * f);
+                if (r.medianPrice != null) r.medianPrice = Math.round(r.medianPrice * f / 1000) * 1000;
+            });
+            meta.asOf = `${meta.asOf}, indexed to BFS IMPI ${live.latestQuarter}` +
+                (live.updated ? ` (updated ${live.updated})` : '');
+        }
+        return { meta, records };
+    }
 
-/* ── State: results of the last search ── */
-let lastResults = [];
+    const bundled = expandBundled();
+    let dataset = bundled;
+    let lastResult = [];
+    let priceChart = null;
+    let countChart = null;
 
-/* ── Read the current filter values from the form ── */
-function readFilters() {
-  const num = (id) => {
-    const v = document.getElementById(id).value.trim();
-    return v === '' ? null : Number(v);
-  };
-  const str = (id) => {
-    const v = document.getElementById(id).value.trim();
-    return v === '' ? null : v;
-  };
-  return {
-    canton: str('f-canton'),
-    type: str('f-type'),
-    priceMin: num('f-price-min'),
-    priceMax: num('f-price-max'),
-    roomsMin: num('f-rooms-min'),
-    spaceMin: num('f-space-min'),
-    yearMin: num('f-year-min'),
-  };
-}
+    // --- element refs -----------------------------------------------------
 
-/* ── Pure filter function over a property list ── */
-function search(properties, f) {
-  return properties.filter((p) => {
-    if (f.canton && p.canton !== f.canton) return false;
-    if (f.type && p.type !== f.type) return false;
-    if (f.priceMin != null && p.price < f.priceMin) return false;
-    if (f.priceMax != null && p.price > f.priceMax) return false;
-    if (f.roomsMin != null && p.rooms < f.roomsMin) return false;
-    if (f.spaceMin != null && p.livingSpace < f.spaceMin) return false;
-    if (f.yearMin != null && p.yearBuilt < f.yearMin) return false;
-    return true;
-  });
-}
+    const el = id => document.getElementById(id);
+    const cantonSelect = el('canton-select');
+    const citySelect = el('city-select');
+    const typeSelect = el('type-select');
+    const queryBtn = el('query-btn');
+    const downloadBtn = el('download-btn');
+    const importInput = el('import-input');
+    const resetBtn = el('reset-btn');
+    const sourceBadge = el('source-badge');
+    const resultsSection = el('results-section');
+    const emptyHint = el('empty-hint');
 
-/* ── Build the card markup for one property ── */
-function cardHtml(p) {
-  const specs = [];
-  if (p.rooms) specs.push(`${p.rooms} rooms`);
-  if (p.livingSpace) specs.push(`${p.livingSpace} m²`);
-  if (p.yearBuilt) specs.push(`built ${p.yearBuilt}`);
+    // --- selectors ---------------------------------------------------------
 
-  return `
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card property-card shadow-sm">
-        <div class="card-body d-flex flex-column">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <span class="badge badge-type">${p.type}</span>
-            <span class="price">${chf.format(p.price)}</span>
-          </div>
-          <h3 class="h6 card-title">${p.title}</h3>
-          <p class="location mb-1">${p.city}, ${cantonName(p.canton)} (${p.canton})</p>
-          <p class="specs mb-2">${specs.join(' · ') || '—'}</p>
-          <p class="card-text small text-body-secondary mb-0">${p.description}</p>
-        </div>
-      </div>
-    </div>`;
-}
+    function rebuildCantonSelect() {
+        const cantons = [];
+        const seen = new Set();
+        dataset.records.forEach(r => {
+            if (!seen.has(r.cantonCode)) {
+                seen.add(r.cantonCode);
+                cantons.push({ code: r.cantonCode, name: r.canton });
+            }
+        });
+        cantons.sort((a, b) => a.name.localeCompare(b.name, 'de-CH'));
+        cantonSelect.innerHTML = '<option value="">All cantons</option>' +
+            cantons.map(c => `<option value="${c.code}">${c.name} (${c.code})</option>`).join('');
+        rebuildCitySelect();
+    }
 
-/* ── Render a result list into the page ── */
-function render(results) {
-  const container = document.getElementById('results');
-  const noResults = document.getElementById('no-results');
-  const count = document.getElementById('result-count');
-  const saveBtn = document.getElementById('save-json');
+    function rebuildCitySelect() {
+        const code = cantonSelect.value;
+        let options = '<option value="">All cities / whole canton</option>';
+        if (code) {
+            const cities = [...new Set(dataset.records
+                .filter(r => r.cantonCode === code && r.city)
+                .map(r => r.city))].sort((a, b) => a.localeCompare(b, 'de-CH'));
+            options += cities.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+        citySelect.innerHTML = options;
+        citySelect.disabled = !code;
+    }
 
-  container.innerHTML = results.map(cardHtml).join('');
+    function updateSourceBadge() {
+        sourceBadge.textContent = `Data: ${dataset.meta.source} — as of ${dataset.meta.asOf}`;
+    }
 
-  if (results.length === 0) {
-    noResults.classList.remove('d-none');
-    count.textContent = 'No properties found';
-  } else {
-    noResults.classList.add('d-none');
-    count.textContent = `${results.length} ${results.length === 1 ? 'property' : 'properties'} found`;
-  }
+    // --- query -------------------------------------------------------------
 
-  saveBtn.disabled = results.length === 0;
-}
+    function locationLabel(r) {
+        return r.city ? r.city : `${r.canton} (canton)`;
+    }
 
-/* ── Export the current results as a downloadable JSON file ── */
-function saveAsJson(results, filters) {
-  const payload = {
-    source: 'Swiss Property Search (fe19.github.io)',
-    exportedAt: new Date().toISOString(),
-    filters,
-    count: results.length,
-    properties: results,
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `swiss-properties-${new Date().toISOString().slice(0, 10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
+    function runQuery() {
+        const code = cantonSelect.value;
+        const city = citySelect.value;
+        const type = typeSelect.value;
 
-/* ── Populate the canton dropdown ── */
-function populateCantons() {
-  const select = document.getElementById('f-canton');
-  Object.keys(CANTONS).sort((a, b) => cantonName(a).localeCompare(cantonName(b)))
-    .forEach((code) => {
-      const opt = document.createElement('option');
-      opt.value = code;
-      opt.textContent = `${cantonName(code)} (${code})`;
-      select.appendChild(opt);
+        let rows = dataset.records.filter(r => {
+            if (type && r.type !== type) return false;
+            if (!code) return r.city === '';           // overview: canton aggregates only
+            if (r.cantonCode !== code) return false;
+            if (city) return r.city === city;
+            return true;                                // whole canton incl. its cities
+        });
+
+        // imported files may carry no canton aggregates — fall back to all rows
+        if (!code && !rows.length) {
+            rows = dataset.records.filter(r => !type || r.type === type);
+        }
+
+        // rank locations by price for readable bars/table
+        const order = new Map();
+        rows.forEach(r => {
+            const key = locationLabel(r);
+            order.set(key, Math.max(order.get(key) || 0, r.priceM2 || 0));
+        });
+        rows = rows.slice().sort((a, b) =>
+            (order.get(locationLabel(b)) - order.get(locationLabel(a))) ||
+            a.type.localeCompare(b.type));
+
+        lastResult = rows;
+        render(rows);
+    }
+
+    // --- rendering ---------------------------------------------------------
+
+    function render(rows) {
+        const has = rows.length > 0;
+        resultsSection.classList.toggle('d-none', !has);
+        emptyHint.classList.toggle('d-none', has);
+        downloadBtn.disabled = !has;
+        if (!has) return;
+        renderTiles(rows);
+        renderTable(rows);
+        renderCharts(rows);
+    }
+
+    function weightedAvg(rows) {
+        let sum = 0, weight = 0;
+        rows.forEach(r => {
+            const w = r.listings || 1;
+            if (r.priceM2 != null) { sum += r.priceM2 * w; weight += w; }
+        });
+        return weight ? sum / weight : null;
+    }
+
+    function renderTiles(rows) {
+        const apts = rows.filter(r => r.type === 'apartment');
+        const houses = rows.filter(r => r.type === 'house');
+        const total = rows.reduce((s, r) => s + (r.listings || 0), 0);
+        const aAvg = weightedAvg(apts);
+        const hAvg = weightedAvg(houses);
+        el('tile-apartment').textContent = aAvg ? fmtInt.format(aAvg) : '–';
+        el('tile-house').textContent = hAvg ? fmtInt.format(hAvg) : '–';
+        el('tile-count').textContent = total ? fmtInt.format(total) : '–';
+    }
+
+    function renderTable(rows) {
+        const body = el('results-body');
+        body.innerHTML = rows.map(r => `
+            <tr>
+                <td>${escapeHtml(locationLabel(r))}</td>
+                <td>${escapeHtml(r.canton)} (${escapeHtml(r.cantonCode)})</td>
+                <td><span class="type-dot" style="background:${SERIES_COLORS[r.type] || '#898781'}"></span>${TYPE_LABELS[r.type] || escapeHtml(r.type)}</td>
+                <td class="text-end">${r.priceM2 != null ? fmtInt.format(r.priceM2) : '–'}</td>
+                <td class="text-end">${r.listings != null ? fmtInt.format(r.listings) : '–'}</td>
+                <td class="text-end">${r.medianPrice != null ? fmtInt.format(r.medianPrice) : '–'}</td>
+                <td class="text-end">${r.yoy != null ? fmtPct.format(r.yoy) + '%' : '–'}</td>
+            </tr>`).join('');
+    }
+
+    function chartFrames(rows, field) {
+        const labels = [...new Set(rows.map(locationLabel))];
+        const types = [...new Set(rows.map(r => r.type))];
+        const datasets = types.map(t => ({
+            label: TYPE_LABELS[t] || t,
+            data: labels.map(l => {
+                const rec = rows.find(r => locationLabel(r) === l && r.type === t);
+                return rec ? rec[field] : null;
+            }),
+            backgroundColor: SERIES_COLORS[t] || '#898781',
+            borderRadius: 4,
+            borderSkipped: 'start',
+            barPercentage: 0.7,
+            categoryPercentage: 0.65,
+            maxBarThickness: 42
+        }));
+        return { labels, datasets, seriesCount: types.length };
+    }
+
+    function barOptions(showLegend, unit) {
+        return {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: showLegend,
+                    position: 'top',
+                    align: 'start',
+                    labels: { boxWidth: 12, boxHeight: 12, color: '#52514e' }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.dataset.label}: ${fmtInt.format(ctx.parsed.x)} ${unit}`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { color: '#e1e0d9' },
+                    border: { color: '#c3c2b7' },
+                    ticks: { color: '#898781', callback: v => fmtInt.format(v) }
+                },
+                y: {
+                    grid: { display: false },
+                    border: { color: '#c3c2b7' },
+                    ticks: { color: '#52514e', autoSkip: false }
+                }
+            }
+        };
+    }
+
+    function renderCharts(rows) {
+        const price = chartFrames(rows, 'priceM2');
+        const count = chartFrames(rows, 'listings');
+        const rowHeight = 16 * price.seriesCount + 18;
+        const height = Math.max(220, price.labels.length * rowHeight + 80);
+        el('price-chart-wrap').style.height = height + 'px';
+        el('count-chart-wrap').style.height = height + 'px';
+
+        if (priceChart) priceChart.destroy();
+        if (countChart) countChart.destroy();
+        priceChart = new Chart(el('price-chart'), {
+            type: 'bar',
+            data: { labels: price.labels, datasets: price.datasets },
+            options: barOptions(price.seriesCount > 1, 'CHF/m²')
+        });
+        countChart = new Chart(el('count-chart'), {
+            type: 'bar',
+            data: { labels: count.labels, datasets: count.datasets },
+            options: barOptions(count.seriesCount > 1, 'listings')
+        });
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c =>
+            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // --- CSV export --------------------------------------------------------
+
+    function csvField(v) {
+        if (v == null) return '';
+        const s = String(v);
+        return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+
+    function downloadCsv() {
+        const lines = [CSV_HEADER.join(',')];
+        lastResult.forEach(r => {
+            lines.push([r.cantonCode, r.canton, r.city, r.type,
+                r.priceM2, r.listings, r.medianPrice, r.yoy].map(csvField).join(','));
+        });
+        const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `swiss-property-stats-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+
+    // --- CSV import --------------------------------------------------------
+
+    function parseCsv(text) {
+        const rows = [];
+        let row = [], field = '', inQuotes = false;
+        text = text.replace(/^\ufeff/, '');
+        for (let i = 0; i < text.length; i++) {
+            const c = text[i];
+            if (inQuotes) {
+                if (c === '"') {
+                    if (text[i + 1] === '"') { field += '"'; i++; }
+                    else inQuotes = false;
+                } else field += c;
+            } else if (c === '"') {
+                inQuotes = true;
+            } else if (c === ',') {
+                row.push(field); field = '';
+            } else if (c === '\n' || c === '\r') {
+                if (c === '\r' && text[i + 1] === '\n') i++;
+                row.push(field); field = '';
+                if (row.some(f => f !== '')) rows.push(row);
+                row = [];
+            } else field += c;
+        }
+        row.push(field);
+        if (row.some(f => f !== '')) rows.push(row);
+        return rows;
+    }
+
+    function num(s) {
+        if (s == null || s === '') return null;
+        const n = Number(String(s).replace(/'/g, ''));
+        return Number.isFinite(n) ? n : null;
+    }
+
+    function importCsv(file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const rows = parseCsv(String(reader.result));
+                if (!rows.length) throw new Error('The file is empty.');
+                const header = rows[0].map(h => h.trim().toLowerCase());
+                const idx = {};
+                CSV_HEADER.forEach(col => { idx[col] = header.indexOf(col); });
+                const missing = CSV_HEADER.filter(c =>
+                    ['canton_code', 'canton', 'city', 'property_type', 'price_chf_per_m2', 'listings'].includes(c) && idx[c] < 0);
+                if (missing.length) {
+                    throw new Error(`Missing column(s): ${missing.join(', ')}. Expected header: ${CSV_HEADER.join(',')}`);
+                }
+                const records = rows.slice(1).map(r => ({
+                    cantonCode: (r[idx.canton_code] || '').trim().toUpperCase(),
+                    canton: (r[idx.canton] || '').trim(),
+                    city: (r[idx.city] || '').trim(),
+                    type: (r[idx.property_type] || '').trim().toLowerCase(),
+                    priceM2: num(r[idx.price_chf_per_m2]),
+                    listings: num(r[idx.listings]),
+                    medianPrice: idx.median_price_chf >= 0 ? num(r[idx.median_price_chf]) : null,
+                    yoy: idx.yoy_change_pct >= 0 ? num(r[idx.yoy_change_pct]) : null
+                })).filter(r => r.cantonCode && r.canton);
+                if (!records.length) throw new Error('No valid data rows found in the file.');
+                dataset = {
+                    meta: { source: `Imported file "${file.name}"`, asOf: new Date(file.lastModified).toISOString().slice(0, 10) },
+                    records
+                };
+                resetBtn.classList.remove('d-none');
+                updateSourceBadge();
+                rebuildCantonSelect();
+                runQuery();
+                showImportMessage(`Imported ${records.length} rows from ${file.name}.`, 'success');
+            } catch (e) {
+                showImportMessage(`Import failed: ${e.message}`, 'danger');
+            }
+            importInput.value = '';
+        };
+        reader.readAsText(file);
+    }
+
+    function showImportMessage(msg, kind) {
+        const box = el('import-message');
+        box.className = `alert alert-${kind} py-2 my-2`;
+        box.textContent = msg;
+        box.classList.remove('d-none');
+    }
+
+    function resetToBundled() {
+        dataset = bundled;
+        resetBtn.classList.add('d-none');
+        el('import-message').classList.add('d-none');
+        updateSourceBadge();
+        rebuildCantonSelect();
+        runQuery();
+    }
+
+    // --- wiring ------------------------------------------------------------
+
+    cantonSelect.addEventListener('change', rebuildCitySelect);
+    queryBtn.addEventListener('click', runQuery);
+    downloadBtn.addEventListener('click', downloadCsv);
+    importInput.addEventListener('change', () => {
+        if (importInput.files.length) importCsv(importInput.files[0]);
     });
-}
+    resetBtn.addEventListener('click', resetToBundled);
 
-/* ── Wire up the page ── */
-function init() {
-  populateCantons();
-
-  const form = document.getElementById('search-form');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const filters = readFilters();
-    getProperties().then((all) => {
-      lastResults = search(all, filters);
-      render(lastResults);
-    });
-  });
-
-  form.addEventListener('reset', () => {
-    lastResults = [];
-    document.getElementById('results').innerHTML = '';
-    document.getElementById('no-results').classList.add('d-none');
-    document.getElementById('result-count').textContent = 'Use the filters above and press Search';
-    document.getElementById('save-json').disabled = true;
-  });
-
-  document.getElementById('save-json').addEventListener('click', () => {
-    if (lastResults.length) saveAsJson(lastResults, readFilters());
-  });
-}
-
-document.addEventListener('DOMContentLoaded', init);
+    updateSourceBadge();
+    rebuildCantonSelect();
+    runQuery();
+})();
