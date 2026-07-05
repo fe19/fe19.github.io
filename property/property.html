@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Property</title>
+    <title>Swiss Property Statistics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="../style.css" rel="stylesheet">
+    <link href="property.css" rel="stylesheet">
 </head>
 
 <body>
@@ -13,9 +14,140 @@
     <script src="../header/header.js"></script>
 
 <div class="px-4 py-2 my-3 text-center">
-    <h1 class="display-5 fw-bold text-body-emphasis">Property</h1>
+    <h1 class="display-5 fw-bold text-body-emphasis">Swiss Property Statistics</h1>
+    <p class="text-muted mb-1">Asking prices for properties to buy (apartments and houses) by canton and city.</p>
+    <span id="source-badge" class="badge text-bg-light border"></span>
 </div>
 
+<div class="container mb-5">
+
+    <!-- filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-4 col-lg-3">
+                    <label for="canton-select" class="form-label">Canton</label>
+                    <select id="canton-select" class="form-select"></select>
+                </div>
+                <div class="col-12 col-md-4 col-lg-3">
+                    <label for="city-select" class="form-label">City</label>
+                    <select id="city-select" class="form-select" disabled></select>
+                </div>
+                <div class="col-12 col-md-4 col-lg-3">
+                    <label for="type-select" class="form-label">Property type</label>
+                    <select id="type-select" class="form-select">
+                        <option value="">Apartments &amp; houses</option>
+                        <option value="apartment">Apartments</option>
+                        <option value="house">Houses</option>
+                    </select>
+                </div>
+                <div class="col-12 col-lg-3 d-grid">
+                    <button id="query-btn" class="btn btn-info text-white fw-semibold">Query</button>
+                </div>
+            </div>
+            <div class="row g-3 align-items-center mt-1">
+                <div class="col-12 col-md-auto">
+                    <button id="download-btn" class="btn btn-outline-secondary btn-sm" disabled>Download result as CSV</button>
+                </div>
+                <div class="col-12 col-md">
+                    <div class="input-group input-group-sm">
+                        <label class="input-group-text" for="import-input">Import CSV</label>
+                        <input type="file" id="import-input" class="form-control" accept=".csv,text/csv">
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto">
+                    <button id="reset-btn" class="btn btn-outline-secondary btn-sm d-none">Reset to bundled data</button>
+                </div>
+            </div>
+            <div id="import-message" class="alert d-none py-2 my-2" role="alert"></div>
+        </div>
+    </div>
+
+    <p id="empty-hint" class="text-muted d-none">No data matches the current selection.</p>
+
+    <div id="results-section" class="d-none">
+
+        <!-- stat tiles -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="stat-tile">
+                    <div class="tile-label">Avg price — apartments</div>
+                    <div class="tile-value" id="tile-apartment">–</div>
+                    <div class="tile-unit">CHF per m², weighted by listings</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="stat-tile">
+                    <div class="tile-label">Avg price — houses</div>
+                    <div class="tile-value" id="tile-house">–</div>
+                    <div class="tile-unit">CHF per m², weighted by listings</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="stat-tile">
+                    <div class="tile-label">Properties for sale</div>
+                    <div class="tile-value" id="tile-count">–</div>
+                    <div class="tile-unit">active buy listings in selection</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- charts -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-xl-6">
+                <div class="chart-card">
+                    <h5>Price per m² (CHF)</h5>
+                    <div id="price-chart-wrap" class="chart-wrap">
+                        <canvas id="price-chart" role="img" aria-label="Bar chart of price per square meter by location"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6">
+                <div class="chart-card">
+                    <h5>Number of properties for sale</h5>
+                    <div id="count-chart-wrap" class="chart-wrap">
+                        <canvas id="count-chart" role="img" aria-label="Bar chart of number of listings by location"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- table -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Results</h5>
+                <div class="table-responsive">
+                    <table id="results-table" class="table table-sm table-striped align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Location</th>
+                                <th>Canton</th>
+                                <th>Type</th>
+                                <th class="text-end">Price CHF/m²</th>
+                                <th class="text-end">Listings</th>
+                                <th class="text-end">Median price CHF</th>
+                                <th class="text-end">YoY change</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-muted mt-3 mb-0" style="font-size: 0.85rem;">
+            Prices are median asking prices for the buy segment (no rentals). The bundled dataset is an
+            approximate snapshot compiled from publicly published market statistics — see
+            <a href="https://github.com/fe19/fe19.github.io/blob/main/property/DATA.md" target="_blank" rel="noopener">DATA.md</a>
+            for sources and how to refresh it. Use "Import CSV" to load a previously downloaded result
+            or your own dataset with the same columns.
+        </p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script src="property.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>

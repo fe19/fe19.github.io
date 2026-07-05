@@ -1,0 +1,62 @@
+.stat-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+}
+
+.stat-tile .tile-label {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-tile .tile-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stat-tile .tile-unit {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+}
+
+.chart-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+}
+
+.chart-card h5 {
+    color: var(--color-text);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.chart-wrap {
+    position: relative;
+}
+
+.type-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    vertical-align: baseline;
+}
+
+#results-table td,
+#results-table th {
+    white-space: nowrap;
+}
+
+#results-table .text-end {
+    font-variant-numeric: tabular-nums;
+}
+
+#source-badge {
+    font-size: 0.8rem;
+}
