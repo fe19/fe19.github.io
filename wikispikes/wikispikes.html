@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wiki Spikes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="../style.css" rel="stylesheet">
+    <link href="wikispikes.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="site-header"></div>
+    <script src="../header/header.js"></script>
+
+    <div class="px-4 py-2 my-3 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">Wiki Spikes</h1>
+        <p class="text-muted mb-0">Articles on English Wikipedia whose pageviews spiked above their 30-day baseline.</p>
+    </div>
+
+    <div class="container pb-5">
+        <div class="toolbar card p-3 mb-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-12 col-md-auto d-flex align-items-center gap-2">
+                    <label for="date-input" class="form-label mb-0 small text-muted">Day</label>
+                    <input type="date" id="date-input" class="form-control form-control-sm w-auto" min="2015-08-01">
+                </div>
+                <div class="col-12 col-md-auto d-flex align-items-center gap-2">
+                    <label for="factor-select" class="form-label mb-0 small text-muted">Spike threshold</label>
+                    <select id="factor-select" class="form-select form-select-sm w-auto">
+                        <option value="2">&times;2</option>
+                        <option value="3" selected>&times;3</option>
+                        <option value="5">&times;5</option>
+                        <option value="10">&times;10</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md text-md-end">
+                    <span id="status" class="text-muted small">Loading&hellip;</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-box" class="alert alert-warning d-none" role="alert"></div>
+
+        <div id="results" class="d-none">
+            <div id="tiles" class="row g-3 mb-4"></div>
+
+            <h2 class="h4 mb-1">Spiking articles</h2>
+            <p class="text-muted small mb-3">Views over the last 30 days &mdash; click a card for the full chart.</p>
+            <div id="cards" class="row g-3 mb-4"></div>
+
+            <div class="mb-3">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#table-section" aria-expanded="false" aria-controls="table-section">
+                    Data table
+                </button>
+            </div>
+            <div id="table-section" class="collapse">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">All analyzed articles</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Article</th>
+                                        <th class="text-end">Views</th>
+                                        <th class="text-end">30-day median</th>
+                                        <th class="text-end">Spike</th>
+                                        <th class="text-end">30-day total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-muted small mt-4 mb-0">
+            Data: <a href="https://wikimedia.org/api/rest_v1/" target="_blank" rel="noopener" class="link-secondary">Wikimedia Pageviews API</a>
+            (user traffic, all platforms). Spike = views on the selected day divided by the median of the 29 days before it,
+            computed for the day's top 50 most-viewed articles. Pageview data is published with about one day of delay.
+        </p>
+    </div>
+
+    <div class="modal fade" id="detail-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="detail-title"></h5>
+                        <div id="detail-sub" class="small text-muted"></div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-chart-wrap"><canvas id="detail-canvas"></canvas></div>
+                    <div class="text-end mt-3">
+                        <a id="detail-link" href="#" target="_blank" rel="noopener" class="btn btn-sm btn-outline-info">Open on Wikipedia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+    <script src="wikispikes.js" defer></script>
+</body>
+</html>

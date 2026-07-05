@@ -1,0 +1,81 @@
+:root {
+    --wsp-series: #2a78d6;
+    --wsp-series-fill: rgba(42, 120, 214, 0.10);
+    --wsp-grid: #e1e0d9;
+    --wsp-axis: #c3c2b7;
+    --wsp-tick: #898781;
+    --wsp-surface: #ffffff;
+}
+
+.spark-wrap {
+    position: relative;
+    height: 76px;
+    margin: 0.75rem 0 0.5rem;
+}
+
+.detail-chart-wrap {
+    position: relative;
+    height: 320px;
+}
+
+.spike-card {
+    cursor: pointer;
+    transition: box-shadow 0.15s ease;
+}
+
+.spike-card:hover {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
+}
+
+.spike-card .card-title {
+    font-size: 1.05rem;
+}
+
+.spike-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    flex: none;
+}
+
+.spike-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.spike-value {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.tile-label {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+}
+
+.tile-value {
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--color-text);
+}
+
+.tile-sub {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#table-body td.num {
+    font-variant-numeric: tabular-nums;
+}
+
+#results.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
