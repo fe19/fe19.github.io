@@ -2,26 +2,96 @@
     'use strict';
 
     const PAGEVIEWS_API = 'https://wikimedia.org/api/rest_v1/metrics/pageviews';
-    const SUMMARY_API = 'https://en.wikipedia.org/api/rest_v1/page/summary/';
-    const PROJECT = 'en.wikipedia';
+    const PROJECT = 'en.wikipedia';   // data source for the global (all-countries) view
     const ACCESS = 'all-access';
     const AGENT = 'user';
 
-    const CANDIDATES = 50;   // top-viewed articles analyzed per day
-    const WINDOW_DAYS = 30;  // history window, including the selected day
-    const MAX_CARDS = 12;    // spike cards shown
-    const POOL_SIZE = 8;     // parallel API requests
+    const CANDIDATES = 50;    // top-viewed articles analyzed when no category is chosen
+    const CATEGORY_POOL = 250;// candidates classified to dig out a chosen category
+    const SERIES_LIMIT = 60;  // max articles we fetch 30-day history for
+    const WINDOW_DAYS = 30;   // history window, including the selected day
+    const MAX_CARDS = 12;     // spike cards shown in the unfiltered global view
+    const FOCUS_CARDS = 10;   // spike cards shown when a country or category is selected
+    const POOL_SIZE = 8;      // parallel API requests
 
-    const EXCLUDED_TITLES = new Set(['Main_Page', '-', 'Search']);
-    const EXCLUDED_PREFIXES = [
-        'Special:', 'Wikipedia:', 'Portal:', 'File:', 'Help:', 'Category:',
-        'Template:', 'Talk:', 'User:', 'User_talk:', 'Draft:', 'Module:',
-        'MediaWiki:', 'Book:', 'TimedText:',
+    // Non-article pages that show up in top lists, in every language we surface.
+    const EXCLUDED_TITLES = new Set([
+        'Main_Page', '-', 'Search', 'メインページ', 'Pagina_principale', 'Wikipedia',
+    ]);
+    // Namespace names (the part before the first ":") to drop, across en/de/fr/it/ja/zh.
+    const EXCLUDED_NS = new Set([
+        'Special', 'Spezial', 'Spécial', 'Speciale', '特別', '特殊', 'Especial',
+        'Wikipedia', 'Wikipédia', 'Help', 'Hilfe', 'Aide', 'Aiuto', 'ヘルプ', '帮助', '幫助',
+        'Portal', 'Portale', 'Portail', 'ポータル', 'File', 'Datei', 'Fichier', 'ファイル', '文件',
+        'Category', 'Kategorie', 'Catégorie', 'Categoria', 'カテゴリ', '分类', '分類',
+        'Template', 'Vorlage', 'Modèle', 'Modello', 'テンプレート', '模板', 'Module', 'Modul',
+        'User', 'Benutzer', 'Utilisateur', 'Utente', '利用者', '用户', 'User_talk', 'Benutzer_Diskussion',
+        'Talk', 'Diskussion', 'Discussion', 'Discussione', 'ノート', 'Draft', 'MediaWiki',
+        'Book', 'TimedText', 'Wikt', 'Wiktionary',
+    ]);
+
+    // Countries offered in the filter: ISO 3166-1 alpha-2 code → label. Order drives the dropdown.
+    const COUNTRIES = [
+        { code: 'US', label: 'United States' },
+        { code: 'GB', label: 'United Kingdom' },
+        { code: 'CH', label: 'Switzerland' },
+        { code: 'CN', label: 'China' },
+        { code: 'JP', label: 'Japan' },
+        { code: 'DE', label: 'Germany' },
     ];
+
+    // ---------- Wikidata classification ----------
+
+    const WIKIDATA_API = 'https://www.wikidata.org/w/api.php';
+    const WD_BATCH = 50;     // entities per wbgetentities request
+
+    // Category options live in the markup; classify() must emit exactly those labels (plus 'Other').
+    // When several buckets match an article, the first present here wins (AI/Persons are checked earlier).
+    const CATEGORY_PRIORITY = ['Companies', 'Places', 'Science', 'Culture', 'Technology'];
+
+    // Wikidata "instance of" (P31) Q-ids that mark an AI system/model — checked before everything else.
+    const AI_SET = new Set([
+        'Q115305900', // large language model
+        'Q116777014', // generative pre-trained transformer
+        'Q133284163', // generative artificial intelligence chatbot
+        'Q117349473', // artificial intelligence model
+        'Q117349475', // artificial intelligence model type
+        'Q114617315', // diffusion model
+        'Q113940039', // text-to-image model
+        'Q1057059',   // chatbot
+    ]);
+
+    // Wikidata "instance of" (P31) Q-ids → category bucket.
+    const CATEGORY_MAP = {
+        // Places
+        Q515: 'Places', Q6256: 'Places', Q3957: 'Places', Q486972: 'Places', Q532: 'Places',
+        Q23442: 'Places', Q8502: 'Places', Q4022: 'Places', Q23397: 'Places', Q1549591: 'Places',
+        Q82794: 'Places', Q35657: 'Places', Q5119: 'Places', Q33837: 'Places', Q3624078: 'Places',
+        // Culture (creative works; people go to Persons)
+        Q11424: 'Culture', Q5398426: 'Culture', Q7889: 'Culture', Q7725634: 'Culture',
+        Q571: 'Culture', Q482994: 'Culture', Q134556: 'Culture', Q7366: 'Culture',
+        Q207628: 'Culture', Q2431196: 'Culture', Q1259759: 'Culture', Q15416: 'Culture',
+        Q24856: 'Culture', Q3464665: 'Culture', Q3305213: 'Culture', Q838948: 'Culture',
+        Q4502142: 'Culture',
+        // Technology (products; AI handled separately, companies go to Companies)
+        Q7397: 'Technology', Q9143: 'Technology', Q9135: 'Technology', Q620615: 'Technology',
+        Q35127: 'Technology', Q19967801: 'Technology', Q3966: 'Technology', Q11661: 'Technology',
+        Q1301371: 'Technology',
+        // Science & nature
+        Q16521: 'Science', Q11344: 'Science', Q8054: 'Science', Q7187: 'Science',
+        Q12136: 'Science', Q18123741: 'Science', Q634: 'Science', Q3863: 'Science',
+        Q523: 'Science', Q2996394: 'Science', Q55983715: 'Science',
+        // Companies & organizations
+        Q4830453: 'Companies', Q6881511: 'Companies', Q783794: 'Companies', Q891723: 'Companies',
+        Q167037: 'Companies', Q18388277: 'Companies', Q129238: 'Companies', Q219577: 'Companies',
+        Q161380: 'Companies', Q431289: 'Companies', Q2085381: 'Companies',
+    };
 
     const dom = {
         date: document.getElementById('date-input'),
         factor: document.getElementById('factor-select'),
+        category: document.getElementById('category-select'),
+        country: document.getElementById('country-select'),
         status: document.getElementById('status'),
         error: document.getElementById('error-box'),
         results: document.getElementById('results'),
@@ -101,8 +171,14 @@
         return node;
     }
 
-    function articleUrl(title) {
-        return 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title);
+    function articleUrl(title, project) {
+        return 'https://' + project + '.org/wiki/' + encodeURIComponent(title);
+    }
+
+    // 'de.wikipedia' → 'dewiki' (Wikidata site id); null for non-Wikipedia projects.
+    function wikiSite(project) {
+        const [lang, family] = project.split('.');
+        return family === 'wikipedia' ? lang + 'wiki' : null;
     }
 
     async function fetchJson(url) {
@@ -150,6 +226,16 @@
         return topCache.get(key);
     }
 
+    async function getTopPerCountry(country, date) {
+        const key = country + '@' + isoDate(date);
+        if (!topCache.has(key)) {
+            topCache.set(key, await fetchJson(
+                PAGEVIEWS_API + '/top-per-country/' + country + '/' + ACCESS + '/' + pathDate(date)
+            ));
+        }
+        return topCache.get(key);
+    }
+
     async function findLatestDate() {
         for (let back = 1; back <= 4; back++) {
             const date = addDays(utcToday(), -back);
@@ -160,12 +246,37 @@
 
     function isRealArticle(title) {
         if (EXCLUDED_TITLES.has(title)) return false;
-        return !EXCLUDED_PREFIXES.some((prefix) => title.startsWith(prefix));
+        const colon = title.indexOf(':');
+        return !(colon > 0 && EXCLUDED_NS.has(title.slice(0, colon)));
     }
 
-    async function getSeries(title, endDate) {
+    // Candidate {article, project} list for the day: the global top-50, or a
+    // country's most-viewed Wikipedia articles when a country is selected.
+    async function getCandidates(date, country, limit) {
+        const toCandidate = (entry) => ({
+            article: entry.article,
+            displayTitle: entry.article.replace(/_/g, ' '),
+            project: entry.project || PROJECT,
+        });
+        if (!country) {
+            const top = await getTop(date);
+            if (!top) return null;
+            return top.items[0].articles
+                .filter((entry) => isRealArticle(entry.article))
+                .slice(0, limit)
+                .map(toCandidate);
+        }
+        const top = await getTopPerCountry(country, date);
+        if (!top) return null;
+        return top.items[0].articles
+            .filter((entry) => wikiSite(entry.project) && isRealArticle(entry.article))
+            .slice(0, limit)
+            .map(toCandidate);
+    }
+
+    async function getSeries(title, endDate, project) {
         const start = addDays(endDate, -(WINDOW_DAYS - 1));
-        const url = PAGEVIEWS_API + '/per-article/' + PROJECT + '/' + ACCESS + '/' + AGENT + '/'
+        const url = PAGEVIEWS_API + '/per-article/' + project + '/' + ACCESS + '/' + AGENT + '/'
             + encodeURIComponent(title) + '/daily/' + stampDate(start) + '/' + stampDate(endDate);
         const data = await fetchJson(url);
         if (!data || !data.items) return null;
@@ -181,17 +292,94 @@
         return { dates, values };
     }
 
-    async function getSummary(title) {
-        if (!state.summaries.has(title)) {
+    function summaryKey(title, project) {
+        return project + '|' + title;
+    }
+
+    async function getSummary(title, project) {
+        const key = summaryKey(title, project);
+        if (!state.summaries.has(key)) {
             let summary = null;
             try {
-                summary = await fetchJson(SUMMARY_API + encodeURIComponent(title));
+                summary = await fetchJson(
+                    'https://' + project + '.org/api/rest_v1/page/summary/' + encodeURIComponent(title)
+                );
             } catch (error) {
                 // Summaries are decoration only; ignore failures.
             }
-            state.summaries.set(title, summary);
+            state.summaries.set(key, summary);
         }
-        return state.summaries.get(title);
+        return state.summaries.get(key);
+    }
+
+    function claimIds(entity, prop) {
+        const claims = entity && entity.claims && entity.claims[prop];
+        if (!claims) return [];
+        const ids = [];
+        for (const claim of claims) {
+            const value = claim.mainsnak && claim.mainsnak.datavalue && claim.mainsnak.datavalue.value;
+            if (value && value.id) ids.push(value.id);
+        }
+        return ids;
+    }
+
+    function classify(instanceIds) {
+        if (instanceIds.some((id) => AI_SET.has(id))) return 'AI';
+        if (instanceIds.includes('Q5')) return 'Persons';
+        const buckets = instanceIds.map((id) => CATEGORY_MAP[id]).filter(Boolean);
+        for (const bucket of CATEGORY_PRIORITY) {
+            if (buckets.includes(bucket)) return bucket;
+        }
+        return 'Other';
+    }
+
+    async function wikidataEntities(params) {
+        const url = WIKIDATA_API + '?action=wbgetentities&format=json&origin=*&languages=en&' + params;
+        try {
+            const data = await fetchJson(url);
+            return (data && data.entities) || {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    // Attach a `category` to each candidate from Wikidata (P31 instance-of). Candidates may
+    // span several language projects, so we query one Wikidata site at a time.
+    async function classifyCandidates(items, runId) {
+        items.forEach((item) => { item.category = 'Other'; });
+        if (!items.length) return;
+        setStatus('Classifying articles…');
+
+        const bySite = new Map();      // Wikidata site id → candidates on that wiki
+        items.forEach((item) => {
+            const site = wikiSite(item.project);
+            if (!site) return;
+            if (!bySite.has(site)) bySite.set(site, []);
+            bySite.get(site).push(item);
+        });
+
+        for (const [site, siteItems] of bySite) {
+            for (let i = 0; i < siteItems.length; i += WD_BATCH) {
+                const batch = siteItems.slice(i, i + WD_BATCH);
+                const entities = await wikidataEntities(
+                    'props=claims|sitelinks&sitefilter=' + site + '&sites=' + site
+                    + '&titles=' + batch.map((item) => encodeURIComponent(item.displayTitle)).join('|')
+                );
+                if (runId !== state.runId) return;
+
+                const byTitle = new Map();
+                for (const id in entities) {
+                    const entity = entities[id];
+                    if (!entity || entity.missing !== undefined) continue;
+                    const link = entity.sitelinks && entity.sitelinks[site];
+                    if (!link) continue;
+                    byTitle.set(link.title, classify(claimIds(entity, 'P31')));
+                }
+                for (const item of batch) {
+                    if (byTitle.has(item.displayTitle)) item.category = byTitle.get(item.displayTitle);
+                }
+            }
+        }
     }
 
     async function analyze(date) {
@@ -201,30 +389,38 @@
         setStatus('Loading top articles…');
 
         try {
-            const top = await getTop(date);
+            const country = dom.country.value;
+            const category = dom.category.value;
+
+            // Pull a wide candidate pool when a category is selected, then classify and narrow.
+            const candidates = await getCandidates(date, country, category ? CATEGORY_POOL : CANDIDATES);
             if (runId !== state.runId) return;
-            if (!top) {
-                showError('No pageview data for ' + isoDate(date) + ' yet. Data is published with about one day of delay.');
+            if (!candidates) {
+                showError('No pageview data for ' + isoDate(date)
+                    + (country ? ' in the selected country' : '')
+                    + ' yet. Data is published with about one day of delay.');
                 setStatus('No data.');
                 dom.results.classList.remove('is-loading');
                 return;
             }
 
-            const candidates = top.items[0].articles
-                .filter((entry) => isRealArticle(entry.article))
-                .slice(0, CANDIDATES);
+            await classifyCandidates(candidates, runId);
+            if (runId !== state.runId) return;
+
+            const selected = (category ? candidates.filter((c) => c.category === category) : candidates)
+                .slice(0, SERIES_LIMIT);
 
             let done = 0;
-            const rows = await pool(candidates, POOL_SIZE, async (entry) => {
+            const rows = await pool(selected, POOL_SIZE, async (entry) => {
                 let series = null;
                 try {
-                    series = await getSeries(entry.article, date);
+                    series = await getSeries(entry.article, date, entry.project);
                 } catch (error) {
                     // Skip articles whose history cannot be loaded.
                 }
                 done++;
                 if (runId === state.runId) {
-                    setStatus('Analyzing ' + done + ' / ' + candidates.length + ' articles…');
+                    setStatus('Analyzing ' + done + ' / ' + selected.length + ' articles…');
                 }
                 if (!series) return null;
 
@@ -232,7 +428,10 @@
                 const baseline = median(series.values.slice(0, -1));
                 return {
                     title: entry.article,
-                    displayTitle: entry.article.replace(/_/g, ' '),
+                    displayTitle: entry.displayTitle,
+                    project: entry.project,
+                    lang: entry.project.split('.')[0],
+                    category: entry.category,
                     views,
                     baseline,
                     factor: views / Math.max(baseline, 1),
@@ -258,21 +457,24 @@
 
     async function render(runId) {
         const threshold = Number(dom.factor.value);
-        const spikes = state.rows.filter((row) => row.factor >= threshold);
-        const cardRows = spikes.slice(0, MAX_CARDS);
+        const focused = dom.country.value || dom.category.value;
+        const limit = focused ? FOCUS_CARDS : MAX_CARDS;
+        const rows = state.rows;
+        const spikes = rows.filter((row) => row.factor >= threshold);
+        const cardRows = spikes.slice(0, limit);
 
-        await pool(cardRows, POOL_SIZE, (row) => getSummary(row.title));
+        await pool(cardRows, POOL_SIZE, (row) => getSummary(row.title, row.project));
         if (runId !== undefined && runId !== state.runId) return;
 
         state.charts.forEach((chart) => chart.destroy());
         state.charts = [];
 
-        renderTiles(spikes, threshold);
+        renderTiles(rows, spikes, threshold);
         renderCards(cardRows, threshold);
-        renderTable();
+        renderTable(rows);
 
         dom.results.classList.remove('d-none', 'is-loading');
-        setStatus(spikes.length + ' of ' + state.rows.length + ' top articles spiking ≥×'
+        setStatus(spikes.length + ' of ' + rows.length + ' top articles spiking ≥×'
             + threshold + ' on ' + fmtDayLong.format(state.date) + '.');
     }
 
@@ -288,10 +490,10 @@
         return col;
     }
 
-    function renderTiles(spikes, threshold) {
+    function renderTiles(rows, spikes, threshold) {
         dom.tiles.replaceChildren();
         const topSpike = spikes[0];
-        const busiest = state.rows.slice().sort((a, b) => b.views - a.views)[0];
+        const busiest = rows.slice().sort((a, b) => b.views - a.views)[0];
 
         dom.tiles.appendChild(tile(
             'Top spike',
@@ -301,7 +503,7 @@
         dom.tiles.appendChild(tile(
             'Spiking articles',
             String(spikes.length),
-            '≥×' + threshold + ' of ' + state.rows.length + ' top articles'
+            '≥×' + threshold + ' of ' + rows.length + ' top articles'
         ));
         dom.tiles.appendChild(tile(
             'Most viewed',
@@ -316,14 +518,15 @@
         if (!rows.length) {
             const note = el('div', 'col-12');
             note.appendChild(el('p', 'text-muted mb-0',
-                'No article in the day’s top ' + CANDIDATES + ' is at ≥×' + threshold
-                + ' of its 30-day median. Try a lower threshold.'));
+                'No analyzed article is at ≥×' + threshold + ' of its 30-day median'
+                + (dom.category.value ? ' in this category' : '')
+                + '. Try a lower threshold' + (dom.category.value ? ' or another category' : '') + '.'));
             dom.cards.appendChild(note);
             return;
         }
 
         rows.forEach((row) => {
-            const summary = state.summaries.get(row.title);
+            const summary = state.summaries.get(summaryKey(row.title, row.project));
             const col = el('div', 'col-12 col-sm-6 col-lg-4');
             const card = el('div', 'card h-100 shadow-sm spike-card');
             card.setAttribute('role', 'button');
@@ -342,12 +545,18 @@
             const headText = el('div', 'min-w-0');
             const title = el('h5', 'card-title mb-1');
             const link = el('a', null, row.displayTitle);
-            link.href = articleUrl(row.title);
+            link.href = articleUrl(row.title, row.project);
             link.target = '_blank';
             link.rel = 'noopener';
             link.addEventListener('click', (event) => event.stopPropagation());
             title.appendChild(link);
             headText.appendChild(title);
+            const meta = el('div', 'spike-meta small text-muted mb-1');
+            meta.appendChild(el('span', 'badge rounded-pill spike-cat', row.category));
+            if (row.lang !== 'en') {
+                meta.appendChild(el('span', 'spike-lang', row.lang.toUpperCase() + '.wiki'));
+            }
+            headText.appendChild(meta);
             if (summary && summary.description) {
                 headText.appendChild(el('p', 'spike-desc small text-muted mb-0', summary.description));
             }
@@ -385,19 +594,22 @@
         });
     }
 
-    function renderTable() {
+    function renderTable(rows) {
         dom.tableBody.replaceChildren();
-        state.rows.forEach((row, index) => {
+        rows.forEach((row, index) => {
             const tr = document.createElement('tr');
             tr.appendChild(el('td', 'text-muted', String(index + 1)));
 
             const tdTitle = document.createElement('td');
             const link = el('a', null, row.displayTitle);
-            link.href = articleUrl(row.title);
+            link.href = articleUrl(row.title, row.project);
             link.target = '_blank';
             link.rel = 'noopener';
             tdTitle.appendChild(link);
             tr.appendChild(tdTitle);
+
+            tr.appendChild(el('td', 'text-muted small', row.category));
+            tr.appendChild(el('td', 'text-muted small', row.lang.toUpperCase()));
 
             tr.appendChild(el('td', 'text-end num', fmtInt.format(row.views)));
             tr.appendChild(el('td', 'text-end num', fmtInt.format(Math.round(row.baseline))));
@@ -500,7 +712,7 @@
         dom.detailTitle.textContent = row.displayTitle;
         dom.detailSub.textContent = fmtInt.format(row.views) + ' views on ' + fmtDayLong.format(state.date)
             + ' · ' + fmtFactor(row.factor) + ' vs 30-day median of ' + fmtInt.format(Math.round(row.baseline));
-        dom.detailLink.href = articleUrl(row.title);
+        dom.detailLink.href = articleUrl(row.title, row.project);
         bootstrap.Modal.getOrCreateInstance(dom.modalEl).show();
     }
 
@@ -520,6 +732,14 @@
 
     dom.factor.addEventListener('change', () => {
         if (state.rows.length) render();
+    });
+
+    dom.category.addEventListener('change', () => {
+        if (state.date) analyze(state.date);
+    });
+
+    dom.country.addEventListener('change', () => {
+        if (state.date) analyze(state.date);
     });
 
     dom.date.addEventListener('change', () => {
