@@ -1,0 +1,40 @@
+/* ── Swiss Property Search — tool-specific styles ──
+   Layout is handled by Bootstrap; this only adds a few touches. */
+
+#search-form .form-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-bottom: 0.25rem;
+}
+
+/* Result cards */
+.property-card {
+    height: 100%;
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+.property-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+.property-card .price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.property-card .location {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+}
+
+.property-card .specs {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+}
+
+.property-card .badge-type {
+    background-color: #0dcaf0;
+    color: #fff;
+}
