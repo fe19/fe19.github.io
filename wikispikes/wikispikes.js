@@ -510,7 +510,7 @@
         dom.cards.replaceChildren();
 
         if (!rows.length) {
-            const note = el('div', 'col-12');
+            const note = el('div', 'col-12 w-100');
             note.appendChild(el('p', 'text-muted mb-0',
                 'No articles to show for this selection'
                 + (dom.category.value ? ' in the ' + dom.category.value + ' category' : '')
@@ -521,7 +521,7 @@
 
         rows.forEach((row) => {
             const summary = state.summaries.get(summaryKey(row.title, row.project));
-            const col = el('div', 'col-12 col-sm-6 col-lg-4');
+            const col = el('div', 'col');
             const card = el('div', 'card h-100 shadow-sm spike-card');
             card.setAttribute('role', 'button');
             card.setAttribute('tabindex', '0');

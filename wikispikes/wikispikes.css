@@ -9,8 +9,8 @@
 
 .spark-wrap {
     position: relative;
-    height: 76px;
-    margin: 0.75rem 0 0.5rem;
+    height: 64px;
+    margin: 0.6rem 0 0.4rem;
 }
 
 .detail-chart-wrap {
@@ -28,15 +28,31 @@
 }
 
 .spike-card .card-title {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.spike-card .card-body {
+    padding: 0.75rem;
 }
 
 .spike-thumb {
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
     object-fit: cover;
     border-radius: 0.5rem;
     flex: none;
+}
+
+/* Denser cards once several fit per row. */
+@media (min-width: 992px) {
+    .spike-card .card-title {
+        font-size: 0.9rem;
+    }
+    .spike-desc {
+        font-size: 0.75rem;
+    }
 }
 
 .spike-meta {
