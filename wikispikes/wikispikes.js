@@ -10,8 +10,7 @@
     const CATEGORY_POOL = 250;// candidates classified to dig out a chosen category
     const SERIES_LIMIT = 60;  // max articles we fetch 30-day history for
     const WINDOW_DAYS = 30;   // history window, including the selected day
-    const MAX_CARDS = 12;     // spike cards shown in the unfiltered global view
-    const FOCUS_CARDS = 10;   // spike cards shown when a country or category is selected
+    const TOP_RESULTS = 20;   // spikes shown per selection (day / category / country)
     const POOL_SIZE = 8;      // parallel API requests
 
     // Non-article pages that show up in top lists, in every language we surface.
@@ -89,7 +88,6 @@
 
     const dom = {
         date: document.getElementById('date-input'),
-        factor: document.getElementById('factor-select'),
         category: document.getElementById('category-select'),
         country: document.getElementById('country-select'),
         status: document.getElementById('status'),
@@ -456,12 +454,8 @@
     // ---------- rendering ----------
 
     async function render(runId) {
-        const threshold = Number(dom.factor.value);
-        const focused = dom.country.value || dom.category.value;
-        const limit = focused ? FOCUS_CARDS : MAX_CARDS;
-        const rows = state.rows;
-        const spikes = rows.filter((row) => row.factor >= threshold);
-        const cardRows = spikes.slice(0, limit);
+        const rows = state.rows;                     // already sorted by spike factor desc
+        const cardRows = rows.slice(0, TOP_RESULTS);
 
         await pool(cardRows, POOL_SIZE, (row) => getSummary(row.title, row.project));
         if (runId !== undefined && runId !== state.runId) return;
@@ -469,13 +463,13 @@
         state.charts.forEach((chart) => chart.destroy());
         state.charts = [];
 
-        renderTiles(rows, spikes, threshold);
-        renderCards(cardRows, threshold);
-        renderTable(rows);
+        renderTiles(rows);
+        renderCards(cardRows);
+        renderTable(cardRows);
 
         dom.results.classList.remove('d-none', 'is-loading');
-        setStatus(spikes.length + ' of ' + rows.length + ' top articles spiking ≥×'
-            + threshold + ' on ' + fmtDayLong.format(state.date) + '.');
+        setStatus('Top ' + cardRows.length + ' spikes of ' + rows.length
+            + ' analyzed articles on ' + fmtDayLong.format(state.date) + '.');
     }
 
     function tile(label, value, sub) {
@@ -490,20 +484,20 @@
         return col;
     }
 
-    function renderTiles(rows, spikes, threshold) {
+    function renderTiles(rows) {
         dom.tiles.replaceChildren();
-        const topSpike = spikes[0];
+        const topSpike = rows[0];
         const busiest = rows.slice().sort((a, b) => b.views - a.views)[0];
 
         dom.tiles.appendChild(tile(
             'Top spike',
             topSpike ? fmtFactor(topSpike.factor) : '—',
-            topSpike ? topSpike.displayTitle : 'No article above ×' + threshold
+            topSpike ? topSpike.displayTitle : 'No spiking article'
         ));
         dom.tiles.appendChild(tile(
-            'Spiking articles',
-            String(spikes.length),
-            '≥×' + threshold + ' of ' + rows.length + ' top articles'
+            'Analyzed articles',
+            String(rows.length),
+            'top ' + Math.min(TOP_RESULTS, rows.length) + ' shown'
         ));
         dom.tiles.appendChild(tile(
             'Most viewed',
@@ -512,15 +506,15 @@
         ));
     }
 
-    function renderCards(rows, threshold) {
+    function renderCards(rows) {
         dom.cards.replaceChildren();
 
         if (!rows.length) {
             const note = el('div', 'col-12');
             note.appendChild(el('p', 'text-muted mb-0',
-                'No analyzed article is at ≥×' + threshold + ' of its 30-day median'
-                + (dom.category.value ? ' in this category' : '')
-                + '. Try a lower threshold' + (dom.category.value ? ' or another category' : '') + '.'));
+                'No articles to show for this selection'
+                + (dom.category.value ? ' in the ' + dom.category.value + ' category' : '')
+                + '. Try another day, category, or country.'));
             dom.cards.appendChild(note);
             return;
         }
@@ -729,10 +723,6 @@
     });
 
     // ---------- wiring ----------
-
-    dom.factor.addEventListener('change', () => {
-        if (state.rows.length) render();
-    });
 
     dom.category.addEventListener('change', () => {
         if (state.date) analyze(state.date);

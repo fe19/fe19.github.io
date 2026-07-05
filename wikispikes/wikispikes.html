@@ -26,15 +26,6 @@
                     <input type="date" id="date-input" class="form-control form-control-sm w-auto" min="2015-08-01">
                 </div>
                 <div class="col-12 col-md-auto d-flex align-items-center gap-2">
-                    <label for="factor-select" class="form-label mb-0 small text-muted">Spike threshold</label>
-                    <select id="factor-select" class="form-select form-select-sm w-auto">
-                        <option value="2">&times;2</option>
-                        <option value="3" selected>&times;3</option>
-                        <option value="5">&times;5</option>
-                        <option value="10">&times;10</option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-auto d-flex align-items-center gap-2">
                     <label for="category-select" class="form-label mb-0 small text-muted">Category</label>
                     <select id="category-select" class="form-select form-select-sm w-auto">
                         <option value="">All categories</option>
@@ -83,7 +74,7 @@
             <div id="table-section" class="collapse">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">All analyzed articles</h5>
+                        <h5 class="card-title">Top 20 spikes</h5>
                         <div class="table-responsive">
                             <table class="table table-sm align-middle mb-0">
                                 <thead>
@@ -112,7 +103,7 @@
             computed for the day's top 50 most-viewed articles. Picking a country instead analyzes that country's own top
             Wikipedia articles (by reader location, in their local language). Picking a category scans a wider pool of top
             articles, classifies them via <a href="https://www.wikidata.org/" target="_blank" rel="noopener" class="link-secondary">Wikidata</a>,
-            and keeps only that category. Country or category views show the top 10 spikes.
+            and keeps only that category. Each day / category / country selection shows its top 20 spikes.
             Pageview data is published with about one day of delay.
         </p>
     </div>
