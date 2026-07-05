@@ -11,6 +11,16 @@
 
     // --- dataset handling ------------------------------------------------
 
+    // indexation factors from the daily BFS IMPI refresh (property/data-live.js)
+    function liveFactors() {
+        const live = typeof SWISS_PROPERTY_LIVE !== 'undefined' ? SWISS_PROPERTY_LIVE : null;
+        if (!live || !live.factors) return null;
+        const sane = t => typeof live.factors[t] === 'number' && live.factors[t] > 0.7 && live.factors[t] < 1.5;
+        if (!sane('apartment') || !sane('house')) return null;
+        if (live.factors.apartment === 1 && live.factors.house === 1) return null;
+        return live;
+    }
+
     function expandBundled() {
         const records = [];
         SWISS_PROPERTY_DATA.rows.forEach(r => {
@@ -18,7 +28,18 @@
             records.push({ cantonCode: code, canton, city, type: 'apartment', priceM2: aM2, listings: aN, medianPrice: aMed, yoy: aYoy });
             records.push({ cantonCode: code, canton, city, type: 'house', priceM2: hM2, listings: hN, medianPrice: hMed, yoy: hYoy });
         });
-        return { meta: SWISS_PROPERTY_DATA.meta, records };
+        const meta = Object.assign({}, SWISS_PROPERTY_DATA.meta);
+        const live = liveFactors();
+        if (live) {
+            records.forEach(r => {
+                const f = live.factors[r.type];
+                if (r.priceM2 != null) r.priceM2 = Math.round(r.priceM2 * f);
+                if (r.medianPrice != null) r.medianPrice = Math.round(r.medianPrice * f / 1000) * 1000;
+            });
+            meta.asOf = `${meta.asOf}, indexed to BFS IMPI ${live.latestQuarter}` +
+                (live.updated ? ` (updated ${live.updated})` : '');
+        }
+        return { meta, records };
     }
 
     const bundled = expandBundled();

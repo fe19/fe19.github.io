@@ -34,7 +34,35 @@ in `SWISS_PROPERTY_DATA.meta.asOf`. They are rounded snapshot estimates intended
 for comparison between locations, not a live market feed and not investment advice.
 Listing counts are rough magnitudes of active buy listings.
 
-## How to refresh the data
+## Daily automatic refresh (GitHub Actions)
+
+The workflow `.github/workflows/refresh-property-data.yml` runs once a day
+(04:17 UTC, also triggerable manually via "Run workflow"). It executes
+`property/refresh-data.mjs`, which:
+
+1. looks up the official IMPI dataset on opendata.swiss (CKAN API) and
+   downloads its CSV resource,
+2. extracts the national quarterly index series for single-family houses and
+   owner-occupied apartments (column layout is auto-detected, so modest format
+   changes survive),
+3. computes indexation factors = latest quarter ÷ baseline quarter
+   (`BASELINE_QUARTER` in the script, matching `meta.asOf` of the bundled
+   snapshot),
+4. writes `property/data-live.js` and commits it if the values changed.
+
+The front-end scales the bundled CHF prices by these factors and appends
+"indexed to BFS IMPI <quarter>" to the source badge. Factors outside 0.7–1.5
+are rejected both by the script and by the front-end, so a malformed upstream
+file can never distort the page. The IMPI is quarterly, so most daily runs
+commit nothing.
+
+If the upstream CSV layout changes beyond what the auto-detection handles, the
+workflow fails with a diagnostic message; test locally with
+`node property/refresh-data.mjs --csv <file> --out /tmp/data-live.js`.
+When the bundled snapshot in `data.js` is re-compiled, set its new reference
+period in `meta.asOf` **and** in `BASELINE_QUARTER` so factors restart at ~1.
+
+## How to refresh the data manually
 
 Two options:
 
