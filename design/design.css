@@ -1,6 +1,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-body { display: flex; background: #fafafa; color: #1a1a1a; overflow: hidden; }
+body { display: flex; flex-direction: column; background: #fafafa; color: #1a1a1a; overflow: hidden; }
+.design-app { display: flex; flex: 1; min-height: 0; width: 100%; }
 
 #controls { width: 290px; flex-shrink: 0; padding: 18px; overflow-y: auto; background: #fff; border-right: 1px solid #e2e2e2; }
 h1 { font-size: 14px; margin-bottom: 18px; font-weight: 600; }
