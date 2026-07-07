@@ -1,0 +1,108 @@
+.coplan-note-list {
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.coplan-note-list .list-group-item {
+    cursor: pointer;
+}
+
+.coplan-note-list .note-title {
+    font-weight: 600;
+}
+
+.coplan-note-list .note-meta {
+    font-size: 0.75rem;
+}
+
+.coplan-title {
+    flex: 1 1 12rem;
+    min-width: 8rem;
+}
+
+.coplan-panes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    min-height: 50vh;
+}
+
+.coplan-panes.split {
+    grid-template-columns: 1fr 1fr;
+}
+
+.coplan-panes.write .coplan-preview,
+.coplan-panes.preview .coplan-textarea {
+    display: none;
+}
+
+.coplan-textarea {
+    resize: vertical;
+    min-height: 50vh;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.coplan-preview {
+    min-height: 50vh;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    padding: 0.75rem 1rem;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.coplan-preview > :last-child {
+    margin-bottom: 0;
+}
+
+.coplan-preview h1,
+.coplan-preview h2,
+.coplan-preview h3 {
+    margin-top: 0.75rem;
+}
+
+.coplan-preview pre {
+    background: var(--bs-tertiary-bg);
+    border-radius: var(--bs-border-radius);
+    padding: 0.5rem 0.75rem;
+    overflow-x: auto;
+}
+
+.coplan-preview blockquote {
+    border-left: 3px solid var(--bs-border-color);
+    padding-left: 0.75rem;
+    color: var(--bs-secondary-color);
+}
+
+.coplan-preview ul.task-list {
+    list-style: none;
+    padding-left: 0.25rem;
+}
+
+.coplan-preview .task-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.coplan-preview .task-item input[type="checkbox"] {
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    top: 2px;
+}
+
+.coplan-preview .task-item.done .task-text {
+    text-decoration: line-through;
+    color: var(--bs-secondary-color);
+}
+
+@media (max-width: 767.98px) {
+    .coplan-textarea,
+    .coplan-preview,
+    .coplan-panes {
+        min-height: 40vh;
+    }
+}
