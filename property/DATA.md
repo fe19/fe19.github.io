@@ -41,9 +41,11 @@ The workflow `.github/workflows/refresh-property-data.yml` runs once a day
 `property/refresh-data.mjs`, which:
 
 1. looks up the official IMPI dataset on opendata.swiss (CKAN API) and
-   downloads its CSV resource,
+   downloads its HTML resource(s),
 2. extracts the national quarterly index series for single-family houses and
-   owner-occupied apartments (column layout is auto-detected, so modest format
+   owner-occupied apartments from the HTML tables (every table on the page is
+   scanned, `rowspan`/`colspan` are expanded, and both layouts — categories as
+   columns or as a category column — are auto-detected, so modest format
    changes survive),
 3. computes indexation factors = latest quarter ÷ baseline quarter
    (`BASELINE_QUARTER` in the script, matching `meta.asOf` of the bundled
@@ -56,9 +58,9 @@ are rejected both by the script and by the front-end, so a malformed upstream
 file can never distort the page. The IMPI is quarterly, so most daily runs
 commit nothing.
 
-If the upstream CSV layout changes beyond what the auto-detection handles, the
+If the upstream HTML layout changes beyond what the auto-detection handles, the
 workflow fails with a diagnostic message; test locally with
-`node property/refresh-data.mjs --csv <file> --out /tmp/data-live.js`.
+`node property/refresh-data.mjs --html <file> --out /tmp/data-live.js`.
 When the bundled snapshot in `data.js` is re-compiled, set its new reference
 period in `meta.asOf` **and** in `BASELINE_QUARTER` so factors restart at ~1.
 
