@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IBKR Saldo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="../style.css" rel="stylesheet">
+    <link href="ibkr.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="site-header"></div>
+    <script src="../header/header.js"></script>
+
+    <div class="px-4 py-2 my-3 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">IBKR Saldo</h1>
+        <p class="text-muted mb-0">Your current Interactive Brokers account balance &mdash; read live from a Client Portal Gateway running on your own machine. No credentials and no account data ever leave your browser.</p>
+    </div>
+
+    <div class="container-xxl pb-5">
+
+        <!-- Connection bar -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-lg-4">
+                        <label for="base-url" class="form-label small text-muted mb-1">Gateway API URL</label>
+                        <input type="url" id="base-url" class="form-control form-control-sm" spellcheck="false"
+                            placeholder="https://localhost:5000/v1/api" autocomplete="off">
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3 d-none" id="account-wrap">
+                        <label for="account-select" class="form-label small text-muted mb-1">Account</label>
+                        <select id="account-select" class="form-select form-select-sm"></select>
+                    </div>
+                    <div class="col-6 col-sm-3 col-lg-2">
+                        <label for="interval-select" class="form-label small text-muted mb-1">Auto refresh</label>
+                        <select id="interval-select" class="form-select form-select-sm">
+                            <option value="0">Off</option>
+                            <option value="10">10 s</option>
+                            <option value="30">30 s</option>
+                            <option value="60">1 min</option>
+                            <option value="300">5 min</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button id="connect-btn" class="btn btn-primary btn-sm">Connect</button>
+                            <button id="refresh-btn" class="btn btn-outline-secondary btn-sm" disabled>Refresh</button>
+                            <button id="demo-btn" class="btn btn-outline-secondary btn-sm">Demo</button>
+                            <button id="disconnect-btn" class="btn btn-outline-danger btn-sm d-none">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="small text-muted me-2">Status</span>
+                    <span id="status-badge" class="badge text-bg-secondary">Disconnected</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="demo-box" class="alert alert-info d-none" role="alert">
+            Showing <strong>synthetic demo data</strong> &mdash; no gateway is connected and none of these figures are real.
+        </div>
+
+        <div id="error-box" class="alert alert-warning d-none" role="alert">
+            <p id="error-text" class="mb-2 fw-semibold"></p>
+            <ul id="error-help" class="mb-2 small"></ul>
+            <a id="gateway-link" href="https://localhost:5000" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Open gateway login</a>
+        </div>
+
+        <!-- Balance -->
+        <div id="results" class="d-none">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body text-center py-4">
+                    <div class="text-muted small text-uppercase ibkr-label">Net liquidation value</div>
+                    <div class="d-flex align-items-baseline justify-content-center gap-2 flex-wrap">
+                        <span id="saldo-value" class="ibkr-saldo">&mdash;</span>
+                        <span id="saldo-currency" class="text-muted fs-5"></span>
+                    </div>
+                    <div id="saldo-change" class="ibkr-subline"></div>
+                    <div id="saldo-account" class="text-muted small mt-2"></div>
+                    <div id="updated" class="text-muted small"></div>
+                </div>
+            </div>
+
+            <div id="tiles" class="row g-2 mb-3"></div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h6 mb-3">Balance by currency</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-2 ibkr-table">
+                            <thead id="ledger-head"></thead>
+                            <tbody id="ledger-body"></tbody>
+                        </table>
+                    </div>
+                    <p id="accruals" class="text-muted small mb-0"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Setup -->
+        <div class="accordion mt-4" id="setup-accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#setup-body" aria-expanded="false" aria-controls="setup-body">
+                        How to connect this page to your IBKR account
+                    </button>
+                </h2>
+                <div id="setup-body" class="accordion-collapse collapse" data-bs-parent="#setup-accordion">
+                    <div class="accordion-body">
+                        <p>
+                            Interactive Brokers has no public browser-callable API: TWS and IB Gateway speak a raw TCP
+                            protocol, and the hosted Web API needs an OAuth flow with a private key that must never sit
+                            in a static page. The supported way for an app like this one is IBKR's
+                            <strong>Client Portal Gateway</strong> &mdash; a small Java process you run yourself. It holds
+                            the authenticated session and exposes the Client Portal Web API on
+                            <code>https://localhost:5000</code>, which this page then reads.
+                        </p>
+
+                        <h3 class="h6 mt-3">1. Run the gateway</h3>
+                        <ol class="small">
+                            <li>Download the Client Portal Gateway from IBKR (requires Java 8 or newer).</li>
+                            <li>Unzip it, then start it: <code>bin/run.sh root/conf.yaml</code> &mdash; on Windows <code>bin\run.bat root\conf.yaml</code>.</li>
+                            <li>Open <a href="https://localhost:5000" target="_blank" rel="noopener">https://localhost:5000</a>, accept the self-signed certificate, and log in with your IBKR credentials.</li>
+                        </ol>
+
+                        <h3 class="h6 mt-3">2. Let this page talk to the gateway</h3>
+                        <p class="small mb-2">
+                            The gateway only answers browser requests from origins it has been told to trust. Edit
+                            <code>root/conf.yaml</code> and allow this page's origin, then restart the gateway:
+                        </p>
+<pre class="ibkr-code small"><code>cors:
+  origin.allowed:
+    - "https://fe19.github.io"
+  allowCredentials: true</code></pre>
+                        <p class="small mb-0">
+                            Simplest alternative, no CORS at all: copy <code>ibkr.html</code>, <code>ibkr.css</code>,
+                            <code>ibkr.js</code> and <code>demo-data.js</code> into the gateway's <code>root/</code>
+                            folder and open them from <code>https://localhost:5000</code> &mdash; then page and API share
+                            an origin. If your gateway listens on another host or port, put its API base URL in the
+                            <em>Gateway API URL</em> field above.
+                        </p>
+
+                        <h3 class="h6 mt-3">3. Connect</h3>
+                        <p class="small mb-0">
+                            Press <strong>Connect</strong>. The page calls <code>/iserver/auth/status</code>,
+                            <code>/portfolio/accounts</code>, <code>/portfolio/{account}/ledger</code> and
+                            <code>/portfolio/{account}/summary</code>, and pings <code>/tickle</code> once a minute so the
+                            gateway session does not time out. Everything is read-only &mdash; this page never places an
+                            order. Note that an active gateway session logs your IBKR user out of other sessions
+                            (TWS, IB Gateway, the web portal) and vice versa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="demo-data.js"></script>
+    <script src="ibkr.js" defer></script>
+</body>
+</html>
