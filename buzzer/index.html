@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Buzzer-Runde</title>
+    <meta name="description" content="Gemeinsamer Buzzer für Quizabende: Gruppe erstellen, Code teilen, jeder kann freigeben, die anderen drücken.">
+    <meta name="theme-color" content="#E0352B">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+    <link rel="stylesheet" href="buzzer.css">
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <h1>Buzzer-Runde</h1>
+        <div class="who" id="who" hidden>
+            <span id="whoName"></span>
+            <button class="link" id="leave" type="button">Gruppe verlassen</button>
+        </div>
+    </header>
+
+    <!-- Start: Name eingeben, Gruppe erstellen oder beitreten -->
+    <main id="home" class="home">
+        <div class="card">
+            <label for="nameInput">Dein Name</label>
+            <input id="nameInput" maxlength="24" autocomplete="nickname" placeholder="Lena">
+            <p class="err" id="nameErr" hidden>Gib einen Namen ein, damit die anderen dich erkennen.</p>
+        </div>
+
+        <div class="card">
+            <h2>Neue Gruppe</h2>
+            <p class="note">Du bekommst einen Code, den du an die anderen schickst.</p>
+            <button class="btn" id="createBtn" type="button">Gruppe erstellen</button>
+        </div>
+
+        <form class="card" id="joinForm" novalidate>
+            <h2>Gruppe beitreten</h2>
+            <label for="codeInput" class="sr-only">Gruppencode</label>
+            <div class="row">
+                <input id="codeInput" class="code-input" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="K7QF2">
+                <button class="btn" type="submit">Beitreten</button>
+            </div>
+            <p class="err" id="codeErr" hidden>Der Code hat 5 Zeichen, zum Beispiel K7QF2.</p>
+        </form>
+    </main>
+
+    <!-- Spiel -->
+    <main id="game" class="game" hidden>
+        <div class="group">
+            <div>
+                <span class="label">Gruppe</span>
+                <span class="code" id="groupCode">-----</span>
+            </div>
+            <button class="btn ghost small" id="shareBtn" type="button">Link teilen</button>
+        </div>
+        <p class="note share-msg" id="shareMsg" aria-live="polite"></p>
+
+        <div class="status" id="status" role="status">
+            <span class="dot"></span><span id="statusText">Gesperrt</span><small id="statusSub"></small>
+        </div>
+
+        <div class="stage">
+            <button id="buzz" class="off" type="button" aria-label="Buzzer">BUZZ</button>
+            <p class="hint" id="hint"></p>
+        </div>
+
+        <button class="btn" id="mainAction" type="button">Buzzer freigeben</button>
+
+        <section>
+            <h2>Reihenfolge</h2>
+            <ol class="order" id="order"></ol>
+        </section>
+
+        <section>
+            <h2 id="playersHead">In der Gruppe</h2>
+            <div class="players" id="players"></div>
+        </section>
+
+        <p class="conn" id="conn"><span class="cdot"></span><span id="connText">Verbinde …</span></p>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.14.1/dist/mqtt.min.js"></script>
+<script src="buzzer.js"></script>
+</body>
+</html>
