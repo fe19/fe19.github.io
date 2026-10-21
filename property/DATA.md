@@ -40,13 +40,11 @@ The workflow `.github/workflows/refresh-property-data.yml` runs once a day
 (04:17 UTC, also triggerable manually via "Run workflow"). It executes
 `property/refresh-data.mjs`, which:
 
-1. looks up the official IMPI dataset on opendata.swiss (CKAN API) and
-   downloads its HTML resource(s),
-2. extracts the national quarterly index series for single-family houses and
-   owner-occupied apartments from the HTML tables (every table on the page is
-   scanned, `rowspan`/`colspan` are expanded, and both layouts — categories as
-   columns or as a category column — are auto-detected, so modest format
-   changes survive),
+1. looks up the current BFS asset "Indexwerte (Basis: Q4 2019 = 100)"
+   (order number `ds-x-05.06.03.01.02`, republished under a new id every
+   quarter) through the BFS DAM API and downloads its JSON,
+2. extracts the national quarterly index series for single-family houses
+   (`efh`) and owner-occupied apartments (`egw`), `geoscope1` = Switzerland,
 3. computes indexation factors = latest quarter ÷ baseline quarter
    (`BASELINE_QUARTER` in the script, matching `meta.asOf` of the bundled
    snapshot),
@@ -58,9 +56,9 @@ are rejected both by the script and by the front-end, so a malformed upstream
 file can never distort the page. The IMPI is quarterly, so most daily runs
 commit nothing.
 
-If the upstream HTML layout changes beyond what the auto-detection handles, the
-workflow fails with a diagnostic message; test locally with
-`node property/refresh-data.mjs --html <file> --out /tmp/data-live.js`.
+If the upstream JSON layout changes, the workflow fails with a diagnostic
+message; test locally with
+`node property/refresh-data.mjs --json <file> --out /tmp/data-live.js`.
 When the bundled snapshot in `data.js` is re-compiled, set its new reference
 period in `meta.asOf` **and** in `BASELINE_QUARTER` so factors restart at ~1.
 
